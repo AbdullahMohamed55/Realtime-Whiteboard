@@ -38,7 +38,7 @@ function setUser() {
         $('#userSet').hide();
     }
 }*/
-// ----------------------------------------ctesting code
+// --------------------- testing code ------------------------
 var socket = io.connect();
 
 socket.on('connect', function() {
@@ -46,24 +46,23 @@ socket.on('connect', function() {
 });
 socket.on('message', function(data) {
 
-    insertMessage(data['message'],data['user']);
+    insertMessage(data," ");
 });
-var $messages = $('.messages-content'),
-    d, h, m,
-    i = 0;
 
-$(window).load(function() {
+
+$(function() {
     $messages.mCustomScrollbar();
-    $('.message-submit').click(function() {
+    $('#submit').click(function() {
         sentMessage();
     });
-    $('.username-submit').click(function() {setUser()});
+    $('#usernameSubmit').click(function() {setUser()});
 
 });
 function sentMessage() {
-    selector = $('.message-input')
+    selector = $('#messageInput')
     if (selector.val() != "")
     {
+
         socket.emit('message',selector.val());
         insertMessage(selector.val(),"Me");
         selector.val('');
@@ -87,7 +86,8 @@ function setDate(){
     d = new Date()
     if (m != d.getMinutes()) {
         m = d.getMinutes();
-        $('<div class="timestamp">' + d.getHours() + ':' + m + '</div>').appendTo($('.message:last'));
+        $("#messageContent").append('<div class="timestamp">' + d.getHours() + ':' + m + '</div>');
+        //$('<div class="timestamp">' + d.getHours() + ':' + m + '</div>').appendTo($('.message:last'));
     }
 }
 
@@ -96,9 +96,9 @@ function insertMessage(msg,user) {
     if ($.trim(msg) == '') {
         return false;
     }
-    $('<div class="message message-personal">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
+    $("#messageContent").append('<div class="message message-personal">' + msg + '</div>');
     setDate();
-    $('.message-input').val(null);
+    $('#messageInput').val(null);
     updateScrollbar();
 
 }
