@@ -2,23 +2,23 @@
  * Created by abdullah on 3/17/17.
  */
 var socket = io.connect();
+
 socket.on('connect', function() {
     console.log('connected');
 });
-socket.on('nbUsers', function(msg) {
-    $("#nbUsers").html(msg.nb);
-});
+
 
 $(function() {
     $("#chatControls").hide();
-    $("#pseudoSet").click(function() {setPseudo()});
+    $("#userSet").click(function() {setUser()});
     $("#submit").click(function() {sentMessage();});
 });
 socket.on('message', function(data) {
-    addMessage(data['message'], data['pseudo']);
+
+    addMessage(data['message'], data['user']);
 });
-function addMessage(msg, pseudo) {
-    $("#chatEntries").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
+function addMessage(msg, user) {
+    $("#chatEntries").append('<div class="message"><p>' + user + ' : ' + msg + '</p></div>');
 }
 function sentMessage() {
     selector = $('#messageInput')
@@ -29,12 +29,12 @@ function sentMessage() {
         selector.val('');
     }
 }
-function setPseudo() {
-    if ($("#pseudoInput").val() != "")
+function setUser() {
+    if ($("#userInput").val() != "")
     {
-        socket.emit('setPseudo', $("#pseudoInput").val());
+        socket.emit('setUser', $("#userInput").val());
         $('#chatControls').show();
-        $('#pseudoInput').hide();
-        $('#pseudoSet').hide();
+        $('#userInput').hide();
+        $('#userSet').hide();
     }
 }

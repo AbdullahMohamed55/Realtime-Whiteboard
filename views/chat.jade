@@ -1,0 +1,19 @@
+// This code is for testing
+extends layout
+
+block content
+    .chat
+        .chat-title
+            input(type='text')#userInput
+            button.username-submit UserName
+            figure.avatar
+                img(src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg")
+
+        .messages
+            .messages-content
+
+        .message-box
+            textarea.message-input(type="text", placeholder="Type message...")
+
+            button.message-submit(type="submit") Send
+    .bg
