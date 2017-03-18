@@ -40,39 +40,43 @@ function setUser() {
 }*/
 // --------------------- testing code ------------------------
 var socket = io.connect();
-
+var username;
+var $messages = $('.messages-content'),
+    d, h, m,
+    i = 0;
 socket.on('connect', function() {
-    console.log('connected');
+
 });
-socket.on('message', function(data) {
+socket.on('message', function(msg,usr) {
 
-    insertMessage(data," ");
+    insertMessage(msg,usr);
 });
 
+function sentMessage() {
+    selector = $('#messageInput')
+    if (selector.val() != "")
+    {
 
-$(function() {
-    $messages.mCustomScrollbar();
+        socket.emit('message',selector.val(),username);
+        //insertMessage(selector.val(),"Me");
+        selector.val('');
+    }
+}
+$(window).load(function() {
+    //$messages.mCustomScrollbar();
     $('#submit').click(function() {
         sentMessage();
     });
     $('#usernameSubmit').click(function() {setUser()});
 
 });
-function sentMessage() {
-    selector = $('#messageInput')
-    if (selector.val() != "")
-    {
 
-        socket.emit('message',selector.val());
-        insertMessage(selector.val(),"Me");
-        selector.val('');
-    }
-}
 function setUser() {
+
     if ($("#userInput").val() != "")
     {
         socket.emit('setUser', $("#userInput").val());
-
+        username = $("#userInput").val()
     }
 }
 function updateScrollbar() {
@@ -84,23 +88,32 @@ function updateScrollbar() {
 
 function setDate(){
     d = new Date()
-    if (m != d.getMinutes()) {
+    if (true) {
         m = d.getMinutes();
-        $("#messageContent").append('<div class="timestamp">' + d.getHours() + ':' + m + '</div>');
-        //$('<div class="timestamp">' + d.getHours() + ':' + m + '</div>').appendTo($('.message:last'));
+        $('.messages').append('<div class="message timestamp">' + d.getHours() + ':' + m + '</div>');
+
     }
 }
 
 function insertMessage(msg,user) {
+    //setDate();
+    if (username == user) {
+        if ($.trim(msg) == '') {
+            return false;
+        }
+        //$("#messageContent").append('<div class="timestamp">'+usr+'</div>');
+        $("#messageContent").append('<div class="message message-personal">' + msg + '</div>');
 
-    if ($.trim(msg) == '') {
-        return false;
+        //updateScrollbar();
     }
-    $("#messageContent").append('<div class="message message-personal">' + msg + '</div>');
-    setDate();
-    $('#messageInput').val(null);
-    updateScrollbar();
+    else{
 
+        $("#messageContent").append('<div class="message new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws' +
+            '.com/s.cdpn.io/156381/profile/profile-80_4.jpg"' + ' />' + '</figure>' + msg + '</div>');
+        $('.message:last').append('<div class="userstamp">'+user+'</div>')
+    }
+
+    $('#messageInput').val(null);
 }
 
 
@@ -113,20 +126,20 @@ $(window).on('keydown', function(e) {
 })
 
 
-/*function fakeMessage() {
+function fakeMessage() {
     if ($('.message-input').val() != '') {
         return false;
     }
     $('<div class="message loading new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg" /></figure><span></span></div>').appendTo($('.mCSB_container'));
-    updateScrollbar();
+    //updateScrollbar();
 
     setTimeout(function() {
         $('.message.loading').remove();
         $('<div class="message new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg"' + ' />' +
-            '</figure>' + Fake[i] + '</div>').appendTo($('.mCSB_container')).addClass('new');
+            '</figure>' + "fuck You" + '</div>').appendTo($('.mCSB_container')).addClass('new');
         setDate();
         updateScrollbar();
         i++;
     }, 1000 + (Math.random() * 20) * 100);
 
-}*/
+}

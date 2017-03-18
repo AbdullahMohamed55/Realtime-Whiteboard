@@ -4,7 +4,8 @@ extends layout
 block content
     div(class ="chat")
         div(class="chat-title")
-            input(type='text')#userInput
+            div(class = "message-input")
+                input(type='text', placeholder="Username...")#userInput
             button(class="message-submit" )#usernameSubmit UserName
             figure(class="avatar")
                 img(src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg")
