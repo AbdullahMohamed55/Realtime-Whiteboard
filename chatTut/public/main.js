@@ -34,23 +34,30 @@ $(function() {
     }
     log(message);
   }
-
+    var data = {
+        username : "",
+        roomname : "space45554"
+    };
 
   // Sets the client's username
   function setUsername () {
     username = cleanInput($usernameInput.val().trim());
-      var data = {
-          username : username,
-          roomname : "space3"
-      };
+
     // If the username is valid
     if (username) {
       $loginPage.fadeOut();
       $chatPage.show();
       $loginPage.off('click');
       $currentInput = $inputMessage.focus();
-
+      data.username = username;
       // Tell the server your username
+        //ON CONNECT
+        /*
+         socket.on('connect', function(){
+         // call the server-side function 'adduser' and send one parameter (value of prompt)
+         socket.emit('adduser', prompt("What's your name?"));
+         });
+         */
         socket.emit('addUser2Room', data);
     }
   }
@@ -242,9 +249,16 @@ $(function() {
 
   // Whenever the server emits 'new message', update the chat body
   socket.on('new message', function (data) {
-    addChatMessage(data);
-  });
 
+        addChatMessage(data);
+    });
+  //MEEEE
+    socket.on('updateNewJoiner',function(pastData){
+      for(i in pastData){
+          addChatMessage(pastData[i]);
+          console.log(pastData[i]);
+      }
+    });
   // Whenever the server emits 'user joined', log it in the chat body
   socket.on('user joined', function (data) {
     log(data.username + ' joined');
@@ -275,7 +289,8 @@ $(function() {
   socket.on('reconnect', function () {
     log('you have been reconnected');
     if (username) {
-      socket.emit('add user', username);
+        data.username = username;
+        socket.emit('addUser2Room', data);
     }
   });
 
