@@ -2,18 +2,18 @@
 extends layout
 
 block content
-    .chat
-        .chat-title
+    div(class ="chat")
+        div(class="chat-title")
             input(type='text')#userInput
-            button.username-submit UserName
-            figure.avatar
+            button(class="message-submit" )#usernameSubmit UserName
+            figure(class="avatar")
                 img(src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg")
 
-        .messages
-            .messages-content
+        div(class ="messages")
+            div(class="messages-content")#messageContent
 
-        .message-box
-            textarea.message-input(type="text", placeholder="Type message...")
+        div(class = "message-box")
+            textarea(class="message-input",type="text", placeholder="Type message...")#messageInput
 
-            button.message-submit(type="submit") Send
-    .bg
+            button(type="submit",class="message-submit")#submit Send
+    div(class="bg")
