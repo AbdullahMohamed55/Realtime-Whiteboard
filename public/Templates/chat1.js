@@ -88,15 +88,15 @@ function updateScrollbar() {
 
 function setDate(){
     d = new Date()
-    if (true) {
+    if (d.getMinutes()!=m) {
         m = d.getMinutes();
-        $('.messages').append('<div class="message timestamp">' + d.getHours() + ':' + m + '</div>');
+        $("#messageContent").append('<div class="timestamp">' + d.getHours() + ':' + m + '</div>');
 
     }
 }
 
 function insertMessage(msg,user) {
-    //setDate();
+    setDate();
     if (username == user) {
         if ($.trim(msg) == '') {
             return false;
@@ -114,13 +114,14 @@ function insertMessage(msg,user) {
     }
 
     $('#messageInput').val(null);
+
 }
 
 
 
 $(window).on('keydown', function(e) {
     if (e.which == 13) {
-        insertMessage();
+        sentMessage();
         return false;
     }
 })
