@@ -37,12 +37,12 @@
  }*/
 // --------------------- testing code ------------------------
 //TODO critical SCROLLING bug
-
+var typing =false;
+var TYPING_TIMER_LENGTH = 400; // ms
 var socket = io.connect();
 var username;
 var $messages = $('.messages-content'),
-    d, h, m,
-    i = 0;
+    d, h, m;
 socket.on('connect', function() {
     console.log("I am connected to server");
 });
@@ -63,11 +63,12 @@ function sentMessage() {
     }
 }
 $(window).load(function() {
-    //$messages.mCustomScrollbar();
+
     $('#submit').click(function() {
         sentMessage();
     });
     $('#usernameSubmit').click(function() {setUsername()});
+    $messages.mCustomScrollbar();
 
 });
 
@@ -135,8 +136,9 @@ function addParticipantsNumbers(numUsers){
 
 // Log a message
 function log (message) {
-
-    $("#messageContent").append('<div class="timestamp">' +  message  + '</div>');
+    $('<div class="timestamp">' +  message  + '</div>').appendTo($('.mCSB_container')).addClass('new');
+    //$("#messageContent").append('<div class="timestamp">' +  message  + '</div>');
+    updateScrollbar();
 }
 
 // Whenever the server emits 'user joined', log it in the chat body
@@ -148,12 +150,12 @@ socket.on('user joined', function (data) {
 //TODO TYPING
 // Whenever the server emits 'typing', show the typing message
 socket.on('typing', function (data) {
-    //addChatTyping(data);
+    addChatTyping(data.username);
 });
 
 // Whenever the server emits 'stop typing', kill the typing message
 socket.on('stop typing', function (data) {
-    //removeChatTyping(data);
+    removeChatTyping();
 });
 /*
 // Adds the visual chat typing message
@@ -225,14 +227,19 @@ function updateScrollbar() {
         timeout: 0
     });
 }
+$('#messageInput').on( 'input',function() {
+    updateTyping();
+});
 
 function setDate(){
     d = new Date()
     if (d.getMinutes()!=m) {
         m = d.getMinutes();
-        $("#messageContent").append('<div class="timestamp">' + d.getHours() + ':' + m + '</div>');
+        $('<div class="timestamp">' + d.getHours() + ':' + m + '</div>').appendTo($('.mCSB_container')).addClass('new');
+        //$("#messageContent").append('<div class="timestamp">' + d.getHours() + ':' + m + '</div>');
 
     }
+    updateScrollbar();
 }
 
 function insertMessage(user,msg) {
@@ -242,18 +249,20 @@ function insertMessage(user,msg) {
             return false;
         }
         //$("#messageContent").append('<div class="timestamp">'+usr+'</div>');
-        $("#messageContent").append('<div class="message message-personal">' + msg + '</div>');
+        //$("#messageContent").append('<div class="message message-personal ">' + msg + '</div>');
+        $('<div class="message message-personal">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
 
-        //updateScrollbar();
     }
     else{
-
-        $("#messageContent").append('<div class="message new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws' +
-            '.com/s.cdpn.io/156381/profile/profile-80_4.jpg"' + ' />' + '</figure>' + msg + '</div>');
+        $('<div class="message new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg" /></figure>'
+            + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
+        //$("#messageContent").append('<div class="message new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws' +
+        //    '.com/s.cdpn.io/156381/profile/profile-80_4.jpg"' + ' />' + '</figure>' + msg + '</div>');
         $('.message:last').append('<div class="userstamp">'+user+'</div>')
     }
 
     $('#messageInput').val(null);
+    updateScrollbar();
 
 }
 
@@ -266,12 +275,38 @@ $(window).on('keydown', function(e) {
     }
 })
 
+function addChatTyping (user) {
+    $('<div class="message loading new"><figure class="avatar"><img src="http:' +
+        '//s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg" /></figure><span></span></div>').appendTo($('.mCSB_container')).addClass('new');
+    $('.message:last').append('<div class="userstamp">'+user+' is typing...'+'</div>')
+}
+function removeChatTyping () {
+    $('.message.loading').remove();
+}
+function updateTyping () {
+    //console.log('client typing');
+    if (!typing) {
+        typing = true;
+        socket.emit('typing');
+    }
+    lastTypingTime = (new Date()).getTime();
+
+    setTimeout(function () {
+        var typingTimer = (new Date()).getTime();
+        var timeDiff = typingTimer - lastTypingTime;
+        if (timeDiff >= TYPING_TIMER_LENGTH && typing) {
+            socket.emit('stop typing');
+            typing = false;
+        }
+    }, TYPING_TIMER_LENGTH);
+}
 
 function fakeMessage() {
     if ($('.message-input').val() != '') {
         return false;
     }
-    $('<div class="message loading new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg" /></figure><span></span></div>').appendTo($('.mCSB_container'));
+    $('<div class="message loading new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws.com/s.cdpn.io' +
+        '/156381/profile/profile-80_4.jpg" /></figure><span></span></div>').appendTo($('.mCSB_container'));
     //updateScrollbar();
 
     setTimeout(function() {

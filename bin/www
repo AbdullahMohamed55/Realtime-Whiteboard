@@ -108,6 +108,7 @@ function newConnection(socket) {
 
     // when the client emits 'typing', we broadcast it to others
     socket.on('typing', function () {
+        //console.log('typing');
         socket.to(socket.roomname).emit('typing', {
             username: socket.username
         });
@@ -115,6 +116,7 @@ function newConnection(socket) {
 
     // when the client emits 'stop typing', we broadcast it to others
     socket.on('stop typing', function () {
+        //console.log('stopped typing');
         socket.to(socket.roomname).emit('stop typing', {
             username: socket.username
         });
