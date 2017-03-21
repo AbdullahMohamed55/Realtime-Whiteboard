@@ -1,4 +1,5 @@
 var express = require('express');
+var paper = require('paper');
 var router = express.Router();
 
 /* GET home page. */
