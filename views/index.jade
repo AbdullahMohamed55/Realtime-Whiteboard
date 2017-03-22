@@ -7,10 +7,10 @@ html
     script(src="../libraries/p5.js")
     script(src="../libraries/p5.dom.js")
     script(src="../libraries/p5.sound.js")
-    script(src="../javascripts/sketch.js")
+    //script(src="../javascripts/sketch.js")
 
     script(src="../libraries/paperjs/dist/paper-full.js")
-    //script(src="../javascripts/usingpaper.js")
+    script(src="../javascripts/usingpaper.js")
 
     //script.
 
@@ -21,7 +21,13 @@ html
     body
       block content
 
-        //canvas(id="myCanvas" resize="true")
+        a(href="#" onclick="tool1.activate();") DrawLine
+        br
+        a(href="#" onclick="tool2.activate();") DrawClouds
+
+        canvas(id="myCanvas" , style="height:100%; width:100%;" )
+
+
 
 
 

@@ -1,9 +1,7 @@
 /**
  * Created by adeladham on 3/20/17.
  */
-// ITP Networked Media, Fall 2014
-// https://github.com/shiffman/itp-networked-media
-// Daniel Shiffman
+
 
 // Keep track of our socket connection
 var socket;
