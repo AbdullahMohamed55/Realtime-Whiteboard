@@ -6,6 +6,7 @@
 // Keep track of our socket connection
 var socket;
 
+
 function setup() {
     createCanvas(400, 400);
     background(0);

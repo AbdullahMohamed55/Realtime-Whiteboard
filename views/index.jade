@@ -3,11 +3,14 @@ html
 
   head
 
-    script(src="/socket.io/socket.io.js")
-    script(src="../libraries/p5.js")
-    script(src="../libraries/p5.dom.js")
-    script(src="../libraries/p5.sound.js")
+    //script(src="../libraries/p5.js")
+    //script(src="../libraries/p5.dom.js")
+    //script(src="../libraries/p5.sound.js")
     //script(src="../javascripts/sketch.js")
+
+    script(src="/socket.io/socket.io.js")
+
+    script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js")
 
     script(src="../libraries/paperjs/dist/paper-full.js")
     script(src="../javascripts/usingpaper.js")
@@ -21,11 +24,22 @@ html
     body
       block content
 
-        a(href="#" onclick="tool1.activate();") DrawLine
-        br
-        a(href="#" onclick="tool2.activate();") DrawClouds
+        //a(href="#" onclick="tool1.activate();") DrawLine
+        //br
+        //a(href="#" onclick="tool2.activate();") DrawClouds
 
-        canvas(id="myCanvas" , style="height:100%; width:100%;" )
+        //form(method="get" action="/")
+        button(id="note" type="submit") Note
+        button(id="squared" type="submit") Squared
+        button(id="blank" type="submit") Blank
+        //input(type="submit" value="Submit")
+
+        canvas(id="myCanvas" resize="false" keepalive="true" style="height:100%; width:100%;" )
+
+
+        //canvas( id="draw", resize="true", keepalive="true" )
+        //script( type="text/paperscript", src="../javascripts/usingpaper.js", canvas="draw")
+
 
 
 
