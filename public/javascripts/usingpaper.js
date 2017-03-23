@@ -109,6 +109,10 @@ paper.setup('myCanvas');
 
 
     //===============================================Handling background change
+    //tthe default backgound
+    document.getElementById("myCanvas").style.backgroundImage = "url('../images/blank.jpg')";
+
+    //the received background
     socket.on('changeBackground', function(data) {
         console.log( 'Background: ', data );
 
@@ -138,16 +142,8 @@ paper.setup('myCanvas');
         socket.emit('changeBackground', data);
     });
 
-
-
-
-
-
     // console.log("Canvas loaded");
-
-
     tool1 = new Tool();
-
     tool1.maxDistance = 50;
 
 // Returns an object specifying a semi-random color
