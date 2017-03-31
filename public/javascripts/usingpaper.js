@@ -86,10 +86,8 @@
 // (4): When the browser receives a pong event
 // console log a message and the events data
 // socket.on('pong', function (data) {
-    // console.log( 'socket: browser receives pong (4)', data );
+// console.log( 'socket: browser receives pong (4)', data );
 // });
-
-// var app = require('../app');
 
 
 paper.install(window);
@@ -104,19 +102,19 @@ socket = io.connect('http://localhost:3000');
 //
 // });
 
-window.onload = function() {
-paper.setup('myCanvas');
+window.onload = function () {
+    paper.setup('myCanvas');
 
 
     //===============================================Handling background change
-    //tthe default backgound
+    //the default background
     document.getElementById("myCanvas").style.backgroundImage = "url('../images/blank.jpg')";
 
     //the received background
-    socket.on('changeBackground', function(data) {
-        console.log( 'Background: ', data );
+    socket.on('changeBackground', function (data) {
+        console.log('Background: ', data);
 
-        document.getElementById("myCanvas").style.backgroundImage = "  url('../images/" + data + " ') " ;
+        document.getElementById("myCanvas").style.backgroundImage = "  url('../images/" + data + " ') ";
     });
 
     //jQuery==========Change background and forward it to socket
@@ -138,45 +136,151 @@ paper.setup('myCanvas');
     $("#blank").click(function () {
         document.getElementById("myCanvas").style.backgroundImage = "url('../images/blank.jpg')";
 
-        var data = "blank.jpg"
+        var data = "blank.jpg";
         socket.emit('changeBackground', data);
     });
 
-    // console.log("Canvas loaded");
-    tool1 = new Tool();
-    tool1.maxDistance = 50;
 
-// Returns an object specifying a semi-random color
-// The color will always have a red value of 0
-// and will be semi-transparent (the alpha value)
+//===============================================Handling Circles OR Brush
+
+    $("#circle").click(function () {
+        tool2.activate();
+    });
+
+    $("#brush").click(function () {
+        tool1.activate();
+        Dcolor = "black";
+    });
+
+
+    //my initialization for brush type
+    var Dcolor = "";
+    var Dsize = 2;
+    //-----------------Brush--------------------
+    var tool1 = new Tool();
+    tool1.minDistance = 10;
+
+    var path2;
+    var path3;
+    tool1.onMouseDown = function onMouseDown(event) {
+        // Create a new path and select it:
+        path2 = new Path();
+        //===============================================Handling brush color change
+        $("#black").click(function () {
+            Dcolor = "black";
+        });
+
+        $("#red").click(function () {
+            Dcolor = "red";
+        });
+
+        $("#green").click(function () {
+            Dcolor = "green";
+        });
+
+        $("#blue").click(function () {
+            Dcolor = "blue";
+        });
+
+        $("#yellow").click(function () {
+            Dcolor = "yellow";
+        });
+
+        path2.strokeColor = Dcolor;
+
+        //===============================================Handling brush size change
+        $("#xsmall").click(function () {
+            Dsize = 2;
+        });
+
+        $("#small").click(function () {
+            Dsize = 4;
+        });
+
+        $("#medium").click(function () {
+            Dsize = 8;
+        });
+
+        $("#large").click(function () {
+            Dsize = 12;
+        });
+
+        $("#xlarge").click(function () {
+            Dsize = 25;
+        });
+
+        path2.strokeWidth = Dsize;
+
+        // Add a segment to the path where you clicked
+        path2.add(event.point);
+        // console.log("My Path down: " + path2.id);
+
+        var data = {
+            pnt: event.point,
+            Dcolor: Dcolor,
+            Dsize: Dsize
+        };
+
+        socket.emit('brush1', data);
+    };
+
+    tool1.onMouseDrag = function onMouseDrag(event) {
+
+        path2.add(event.point);
+
+        console.log("Ade el Gamed Shiwaia : " + event.point.x);
+
+        // console.log("My Path drag: " + path2.id);
+
+
+        socket.emit('brush2', event.point);
+    };
+
+    //receiving any sent data from server
+    socket.on('brush1',
+        // When we receive data
+        function (data) {
+
+            console.log("Received1: " + data.pnt[1] + " " + data.pnt[2]);
+
+            path3 = new Path();
+            path3.strokeColor = data.Dcolor;
+            path3.strokeWidth = data.Dsize;
+            path3.add(new Point(data.pnt[1], data.pnt[2]));
+
+            view.draw();
+            console.log("brush1 Path: " + path3.id);
+
+        }
+    );
+
+    socket.on('brush2',
+        // When we receive data
+        function (data) {
+
+            console.log("Received2: " + data);
+
+            //This is too fuckin stupid shit of java
+            path3.add(new Point(data[1], data[2]));
+            view.draw();
+
+            console.log("brush2 Path: " + path3.id);
+        }
+    );
+
+
+    //---------------Circles------------------
+    var tool2 = new Tool();
+    tool2.maxDistance = 100;
+
     function randomColor() {
 
         return {
-            red: 0,
+            red: Math.random(),
             green: Math.random(),
             blue: Math.random(),
-            alpha: ( Math.random() * 0.25 ) + 0.05
+            alpha: ( Math.random() * 0.4 ) + 0.07
         };
-    }
-
-// every time the user drags their mouse
-// this function will be executed
-    function onMouseDrag(event) {
-        // Take the click/touch position as the centre of our circle
-        var x = event.middlePoint.x;
-        var y = event.middlePoint.y;
-
-        console.log("y: " + event.middlePoint.y);
-
-        // The faster the movement, the bigger the circle
-        var radius = event.delta.length / 2;
-        // Generate our random color
-        var color = randomColor();
-        // Draw the circle
-        drawCircle(x, y, radius, color);
-        // Pass the data for this circle
-        // to a special function for later
-        emitCircle(x, y, radius, color);
     }
 
     function drawCircle(x, y, radius, color) {
@@ -187,12 +291,7 @@ paper.setup('myCanvas');
         view.draw();
     }
 
-    // This function sends the data for a circle to the server
-// so that the server can broadcast it to every other user
-    function emitCircle( x, y, radius, color) {
-
-        // Each Socket.IO connection has a unique session id
-        // var sessionId = socket.socket.sessionid;
+    function emitCircle(x, y, radius, color) {
 
         // An object to describe the circle's draw data
         var data = {
@@ -206,27 +305,40 @@ paper.setup('myCanvas');
         socket.emit('drawCircle', data);
 
         // Lets have a look at the data we're sending
-        console.log( "sent data: " + data );
+        console.log("sent data: " + data);
 
     }
 
-    tool1.onMouseDrag = onMouseDrag;
 
-    // Listen for 'drawCircle' events
-    // created by other users
-    socket.on('drawCircle', function(data) {
-        console.log( 'drawCircle event recieved:', data );
+    tool2.onMouseDrag = function onMouseDrag(event) {
+        // Take the click/touch position as the centre of our circle
+        var x = event.middlePoint.x;
+        var y = event.middlePoint.y;
 
+        console.log("y: " + event.middlePoint.y);
+
+        // The faster the movement, the bigger the circle
+        var radius = event.delta.length / 2;
+        // Generate our random color
+        var color = randomColor();
+
+        // Draw the circle
+        drawCircle(x, y, radius, color);
+        // Pass the data for this circle
+        // to a special function for later
+        emitCircle(x, y, radius, color);
+    };
+
+    socket.on('drawCircle', function (data) {
+        console.log('drawCircle event recieved:', data);
         // Draw the circle using the data sent
         // from another user
-        drawCircle( data.x, data.y, data.radius, data.color );
-
-
+        drawCircle(data.x, data.y, data.radius, data.color);
     });
 
+};
 
-}
-
+//======================================================================================================================
 
 //recognizing mouse actions(drawing)
 // paper.install(window);

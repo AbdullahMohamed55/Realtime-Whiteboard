@@ -2,43 +2,39 @@ doctype html
 html
 
   head
-
-    //script(src="../libraries/p5.js")
-    //script(src="../libraries/p5.dom.js")
-    //script(src="../libraries/p5.sound.js")
-    //script(src="../javascripts/sketch.js")
-
     script(src="/socket.io/socket.io.js")
-
     script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js")
-
     script(src="../libraries/paperjs/dist/paper-full.js")
     script(src="../javascripts/usingpaper.js")
 
-    //script.
-
-
-
-    //meta charset="UTF-8"
-    title Sockets Jade Example
+    title Drawing Whiteboard
     body
       block content
 
-        //a(href="#" onclick="tool1.activate();") DrawLine
-        //br
-        //a(href="#" onclick="tool2.activate();") DrawClouds
-
-        //form(method="get" action="/")
+        label() Background:
         button(id="note" type="submit") Note
         button(id="squared" type="submit") Squared
         button(id="blank" type="submit") Blank
-        //input(type="submit" value="Submit")
+
+        label() Brush Colors:
+        button(id="black" type="submit") Black
+        button(id="red" type="submit") Red
+        button(id="green" type="submit") Green
+        button(id="blue" type="submit") Blue
+        button(id="yellow" type="submit") Yellow
+
+        label() Size:
+        button(id="xsmall" type="submit") XSmall
+        button(id="small" type="submit") Small
+        button(id="medium" type="submit") Medium
+        button(id="large" type="submit") Large
+        button(id="xlarge" type="submit") XLarge
+
+        label() Draw:
+        button(id="circle" type="submit") Circles
+        button(id="brush" type="submit") Brush
 
         canvas(id="myCanvas" resize="true" keepalive="true" style="height:100%; width:100%;" )
-
-
-        //canvas( id="draw", resize="true", keepalive="true" )
-        //script( type="text/paperscript", src="../javascripts/usingpaper.js", canvas="draw")
 
 
 

@@ -129,6 +129,24 @@ io.sockets.on('connection',
             }
         );
 
+        socket.on('brush1',
+            function(data) {
+                // Data comes in as whatever was sent, including objects
+                console.log("Received data1: " + data);
+                // Send it to all other clients
+                socket.broadcast.emit('brush1', data);
+            }
+        );
+
+        socket.on('brush2',
+            function(data) {
+                // Data comes in as whatever was sent, including objects
+                console.log("Received data2: " + data);
+                // Send it to all other clients
+                socket.broadcast.emit('brush2', data);
+            }
+        );
+
         socket.on('disconnect', function() {
             console.log("Client has disconnected");
         });
