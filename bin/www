@@ -147,6 +147,21 @@ io.sockets.on('connection',
             }
         );
 
+        socket.on('undo',
+            function(data) {
+                // Data comes in as whatever was sent, including objects
+                console.log("Received undo request: " + data);
+                // Send it to all other clients
+                socket.broadcast.emit('undo', data);
+            }
+        );
+
+        socket.on('mouse_up',
+            function(data) {
+                socket.broadcast.emit('mouse_up', data);
+            }
+        );
+
         socket.on('disconnect', function() {
             console.log("Client has disconnected");
         });

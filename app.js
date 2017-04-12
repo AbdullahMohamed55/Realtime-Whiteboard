@@ -10,6 +10,7 @@ var index = require('./routes/index');
 var index_bucky = require('./routes/index_bucky');
 var users = require('./routes/users');
 var try_html = require('./routes/try_html');
+var whiteboard = require('./routes/whiteboard');
 
 var app = express();
 // app.locals.videodata = require('./videodata');
@@ -31,6 +32,7 @@ app.use('/', index);
 app.use('/index_bucky', index_bucky);
 app.use('/users', users);
 app.use('/try_html', try_html);
+app.use('/whiteboard', whiteboard);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

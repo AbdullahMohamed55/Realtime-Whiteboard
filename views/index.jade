@@ -6,6 +6,7 @@ html
     script(src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js")
     script(src="../libraries/paperjs/dist/paper-full.js")
     script(src="../javascripts/usingpaper.js")
+    script(src="../stylesheets/style.css")
 
     title Drawing Whiteboard
     body
@@ -33,6 +34,16 @@ html
         label() Draw:
         button(id="circle" type="submit") Circles
         button(id="brush" type="submit") Brush
+
+        label() Undo:
+        button(id="undo" type="submit") Undo
+
+        //label() Eraser:
+        //button(id="del" type="submit") Eraser
+
+        label() snapshot:
+        button(id="snapshot" type="submit") snapshot
+
 
         canvas(id="myCanvas" resize="true" keepalive="true" style="height:100%; width:100%;" )
 

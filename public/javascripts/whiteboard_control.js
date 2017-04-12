@@ -1,106 +1,6 @@
-//Drawing with 2 different methods
-// paper.install(window);
-// // Keep global references to both tools, so the HTML
-// // links below can access them.
-//
-// var socket;
-// socket = io.connect('http://localhost:3000');
-//
-// var tool1, tool2;
-// window.onload = function() {
-//     paper.setup('myCanvas');
-//
-//
-//
-//     //receiving any sent data from server
-//     socket.on('mouse',
-//         // When we receive data
-//         function(data) {
-//             console.log("Got: " + data);
-//             // Draw a blue circle
-//
-//             var path = new Path();
-//
-//             //why the fuck it is not drawing?!!
-//             path.strokeColor = 'black';
-//             path.add(data);
-//             view.draw();
-//             tool1.activate();
-//
-//
-//         }
-//     );
-//     // Create two drawing tools.
-//     // tool1 will draw straight lines,
-//     // tool2 will draw clouds.
-//     var path;
-//     // Both share the mouseDown event:
-//     function onMouseDown(event) {
-//         path = new Path();
-//         path.strokeColor = 'black';
-//         path.add(event.point);
-//
-//
-//
-//     }
-//
-//     tool1 = new Tool();
-//     tool1.onMouseDown = onMouseDown;
-//
-//     tool1.onMouseDrag = function(event) {
-//         path.add(event.point);
-//
-//         //sending this to server
-//         var data = event.point;
-//         socket.emit('mouse', data)
-//
-//
-//     }
-//
-//     tool2 = new Tool();
-//     tool2.minDistance = 20;
-//     tool2.onMouseDown = onMouseDown;
-//
-//     tool2.onMouseDrag = function(event) {
-//         // Use the arcTo command to draw cloudy lines
-//         path.arcTo(event.point);
-//
-//         //sending this to server
-//         var data = event.point;
-//         console.log("Iam " + io.socket.id + "sendmouse: " + data);
-//         socket.emit('mouse', data)
-//
-//     }
-//
-//
-// }
-
-
-// var socket;
-// socket = io.connect('http://localhost:3000');
-//trying socket and collaborative drawing
-// (1): Send a ping event with
-// some data to the server
-// console.log( "socket: browser says ping (1)" )
-// socket.emit('ping', { some: 'data' } );
-// (4): When the browser receives a pong event
-// console log a message and the events data
-// socket.on('pong', function (data) {
-// console.log( 'socket: browser receives pong (4)', data );
-// });
-
-
 paper.install(window);
 var socket;
 socket = io.connect('http://localhost:3000');
-
-// console.log("I am a new client");
-
-// document.getElementById("note").onclick(function () {
-//
-//     document.getElementById("myCanvas").style.backgroundImage = "url('../images/note.jpg')";
-//
-// });
 
 window.onload = function () {
     paper.setup('myCanvas');
@@ -108,7 +8,7 @@ window.onload = function () {
 
     //===============================================Handling background change
     //the default background
-    document.getElementById("myCanvas").style.backgroundImage = "url('../images/whiteboard/blank.jpg')";
+    document.getElementById("myCanvas").style.backgroundImage = "url('../images/whiteboard/dark.jpg')";
 
     //the received background
     socket.on('changeBackground', function (data) {
@@ -118,11 +18,11 @@ window.onload = function () {
     });
 
     //jQuery==========Change background and forward it to socket
-    $("#note").click(function () {
+    $("#dark").click(function () {
 
-        document.getElementById("myCanvas").style.backgroundImage = "url('../images/whiteboard/note.jpg')";
+        document.getElementById("myCanvas").style.backgroundImage = "url('../images/whiteboard/dark.jpg')";
 
-        var data = "note.jpg"
+        var data = "dark.jpg";
         socket.emit('changeBackground', data);
     });
 
@@ -279,7 +179,7 @@ window.onload = function () {
     });
 
 
-        //receiving any sent data from server
+    //receiving any sent data from server
     socket.on('brush1',
         // When we receive data
         function (data) {
@@ -409,113 +309,4 @@ window.onload = function () {
 };
 
 //======================================================================================================================
-
-//recognizing mouse actions(drawing)
-// paper.install(window);
-// window.onload = function() {
-//     paper.setup('myCanvas');
-//     // Create a simple drawing tool:
-//     var tool = new Tool();
-//     var path;
-//
-//     // Define a mousedown and mousedrag handler
-//     tool.onMouseDown = function(event) {
-//         path = new Path();
-//         path.strokeColor = 'black';
-//         path.size = '100'
-//         path.add(event.point);
-//     }
-//
-//     tool.onMouseDrag = function(event) {
-//         path.add(event.point);
-//     }
-// }
-
-//moving rect
-// paper.install(window);
-// window.onload = function() {
-//     paper.setup('myCanvas');
-//     var path = new Path.Rectangle([75, 75], [150, 150]);
-//     path.strokeColor = 'black';
-//
-//     view.onFrame = function(event) {
-//         // On each frame, rotate the path by 3 degrees:
-//         path.rotate(3);
-//     }
-// }
-
-//Draw line
-// window.onload = function() {
-//     paper.setup('myCanvas');
-//     with (paper) {
-//         var path = new Path();
-//         path.strokeColor = 'black';
-//         var start = new Point(100, 100);
-//         path.moveTo(start);
-//         path.lineTo(start.add([ 200, -50 ]));
-//         view.draw();
-//     }
-// }
-
-//Trying some shit
-// var socket;
-//
-// // Make the paper scope global, by injecting it into window:
-// paper.install(window);
-// window.onload = function() {
-//
-//     // Setup directly from canvas id:
-//     paper.setup('myCanvas');
-//     paper.createCanvas(400,400);
-//     paper.background(0);
-//
-//     socket = io.connect('http://localhost:3000');
-//
-//     // We make a named event called 'mouse' and write an
-//     // anonymous callback function
-//     socket.on('mouse',
-//         // When we receive data
-//         function(data) {
-//             console.log("Got: " + data.x + " " + data.y);
-//             // Draw a blue circle
-//             paper.fill(0,0,255);
-//             paper.noStroke();
-//             paper.ellipse(data.x, data.y, 20, 20);
-//         }
-//     );
-//
-//
-//
-//     // var path = new Path();
-//     // path.strokeColor = 'black';
-//     // var start = new Point(150, 100);
-//     // path.moveTo(start);
-//     // path.lineTo(start.add([ 200, -50 ]));
-//     // view.draw();
-// }
-//
-//
-//
-// function mouseDragged() {
-//     // Draw some white circles
-//     paper.fill(255);
-//     paper.noStroke();
-//     paper.ellipse(mouseX,mouseY,20,20);
-//     // Send the mouse coordinates
-//     sendmouse(mouseX,mouseY);
-// }
-//
-// function sendmouse(xpos, ypos) {
-//     // We are sending!
-//     console.log("sendmouse: " + xpos + " " + ypos);
-//
-//     // Make a little object with  and y
-//     var data = {
-//         x: xpos,
-//         y: ypos
-//     };
-//
-//     // Send that object to the socket
-//     socket.emit('mouse',data);
-// }
 
