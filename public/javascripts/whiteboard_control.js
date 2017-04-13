@@ -72,6 +72,10 @@ window.onload = function () {
             Dcolor = "black";
         });
 
+        $("#white").click(function () {
+            Dcolor = "white";
+        });
+
         $("#red").click(function () {
             Dcolor = "red";
         });
@@ -212,10 +216,21 @@ window.onload = function () {
     );
 
 
+    var audio = new Audio('../sounds/cameraFlash.mp3');
     $("#snapshot").click(function () {
         // these two lines create an Image Object and load it with what/s on the canvas
         var thisImage = new Image();
         thisImage = document.getElementById('myCanvas').toDataURL();
+
+        $('.flash')
+            .show()  //show the hidden div
+            .animate({opacity: 0.6}, 300)
+            .fadeOut(500)
+            .css({'opacity': 1});
+
+        audio.play();
+
+
 
         downloadURI(thisImage,"image.png");
 
@@ -234,6 +249,11 @@ window.onload = function () {
         document.body.removeChild(link);
         delete link;
     }
+
+    $(document).ready(function() {
+        $('.flash').hide();
+    });
+
 
 
 

@@ -13,7 +13,7 @@ ul.sdt_menu a{
 ul.sdt_menu li{
 	float:left;
 	width:22vh;
-	height:85px;
+	height:10vh;
 	position:relative;
 	cursor:pointer;
 }
@@ -90,7 +90,7 @@ ul.sdt_menu li div.sdt_box{
 	position:absolute;
 	width:22vh;
 	overflow:hidden;
-	height:22vh;
+	height:25vh;
 	top:10vh;
 	left:0px;
 	display:none;
@@ -119,4 +119,16 @@ canvas {
 	height:100%;
 	margin-top: 12vh;
 
+}
+
+.flash{
+
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width:100%;
+	height:100%;
+	background-color:#fff;
+	z-index: 100;
+	/*opacity: 0.2;*/
 }
