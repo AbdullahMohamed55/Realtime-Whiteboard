@@ -1,15 +1,16 @@
 var express = require('express');
 var paper = require('paper');
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var whiteboard = require('./routes/whiteboard');
 
-var app = express();
-// app.locals.videodata = require('./videodata');
+var app = require('express')();
+var index = require('./routes/index');
+var users = require('./routes/users');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,10 +20,12 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', index);
+app.use('/users', users);
 app.use('/whiteboard', whiteboard);
 
 // catch 404 and forward to error handler
