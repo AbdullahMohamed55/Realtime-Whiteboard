@@ -36,17 +36,23 @@
  }
  }*/
 // --------------------- testing code ------------------------
-//TODO critical SCROLLING bug
 var typing =false;
 var TYPING_TIMER_LENGTH = 400; // ms
 var socket = io.connect();
 var username;
 var $messages = $('.messages-content'),
     d, h, m;
+var clientData = {
+    username : "",
+    roomname : "space",
+    url : ""
+};
 socket.on('connect', function() {
     console.log("I am connected to server");
 });
 /*
+
+
 socket.on('message', function(msg,usr) {
 
     insertMessage(msg,usr);
@@ -70,7 +76,8 @@ $(window).load(function() {
             showCancelButton: true,
             closeOnConfirm: false,
             animation: "slide-from-top",
-            inputPlaceholder: "Write in your username"
+            inputPlaceholder: "Write in your username",
+            closeOnCancel :false
         },
         function (inputValue) {
             if (inputValue === false) return false;
@@ -83,25 +90,80 @@ $(window).load(function() {
 
             setUsername();
             swal("Nice!", "Welcome " + inputValue, "success");
+
         });
+
     $('#submit').click(function() {
         sentMessage();
     });
-    //$('#usernameSubmit').click(function() {setUsername()});
+    $('#usernameSubmit').click(function() {
+        addtoroom();
+    });
     $messages.mCustomScrollbar();
 
 });
 
 ///////////////////////
-var clientData = {
-    username : "",
-    roomname : "space"
-};
+
 // Prevents input from having injected markup
 function cleanInput (input) {
     return $('<div/>').text(input).text();
 }
+function addtoroom(){
 
+
+    if(username){
+
+        swal({
+                title: "Enter Url",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Ok",
+                cancelButtonText: "No, create new room",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+
+            function(isConfirm){
+                if (isConfirm) {
+                    swal({
+                            title: "Room URL",
+                            type: "input",
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                            animation: "slide-from-top",
+                            inputPlaceholder: "Write in your URl",
+                            closeOnCancel :false
+                        },
+                        function (inputValue) {
+                            if (inputValue === false) return false;
+
+                            if (inputValue === "") {
+                                swal.showInputError("You need to write something!");
+                                return false
+                            }
+                            clientData.url = inputValue;
+                            console.log(inputValue);
+                            socket.emit('addUser2Room', clientData);
+                            swal("Welcome", "Join Your friends", "success");
+
+                        });
+
+
+
+                } else {
+                    swal("Done", "New room was created", "success");
+                    socket.emit('addUser2Room', clientData);
+
+                }
+                //socket.emit('addUser2Room', clientData);
+            });
+
+
+
+    }
+}
 // Sets the client's username
 function setUsername () {
     //var username = cleanInput($("#userInput").val().trim());
@@ -123,7 +185,7 @@ function setUsername () {
          socket.emit('adduser', prompt("What's your name?"));
          });
          */
-        socket.emit('addUser2Room', clientData);
+
     }
 }
 
@@ -138,7 +200,7 @@ socket.on('updateNewJoiner',function(pastData){
 socket.on('login', function (numUsers) {
     //connected = true;
     // Display the welcome message
-    var message = "Welcome to" + clientData.roomname;//TODO USE TIME STAMP
+    var message = "Welcome to " + clientData.roomname;//TODO USE TIME STAMP
     log(message);
 
     //addParticipantsNumbers(numUsers);
