@@ -1,0 +1,18 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+
+  background:#333 url('../images/whiteboard/dark.jpg') repeat top left;
+  font-family:Arial;
+
+}
+
+a {
+  color: #00B7FF;
+}
+
+canvas{
+
+  height: 100%;
+  width: 100%;
+}
