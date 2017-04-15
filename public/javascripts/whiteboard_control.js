@@ -3,120 +3,114 @@ var socket;
 socket = io.connect('http://localhost:3000');
 
 window.onload = function () {
+    var Mycanvas = document.getElementById('myCanvas');
     paper.setup('myCanvas');
 
 
     //===============================================Handling background change
     //the default background
-    document.getElementById("myCanvas").style.backgroundImage = "url('../images/whiteboard/dark.jpg')";
+    Mycanvas.style.backgroundImage = "url('../images/whiteboard/dark.jpg')";
 
     //the received background
     socket.on('changeBackground', function (data) {
         console.log('Background: ', data);
 
-        document.getElementById("myCanvas").style.backgroundImage = "  url('../images/whiteboard/" + data + " ') ";
+        Mycanvas.style.backgroundImage = "  url('../images/whiteboard/" + data + " ') ";
     });
 
     //jQuery==========Change background and forward it to socket
     $("#dark").click(function () {
 
-        document.getElementById("myCanvas").style.backgroundImage = "url('../images/whiteboard/dark.jpg')";
+        Mycanvas.style.backgroundImage = "url('../images/whiteboard/dark.jpg')";
 
         var data = "dark.jpg";
         socket.emit('changeBackground', data);
     });
 
     $("#squared").click(function () {
-        document.getElementById("myCanvas").style.backgroundImage = "url('../images/whiteboard/squared.png')";
+        Mycanvas.style.backgroundImage = "url('../images/whiteboard/squared.png')";
 
         var data = "squared.png"
         socket.emit('changeBackground', data);
     });
 
     $("#blank").click(function () {
-        document.getElementById("myCanvas").style.backgroundImage = "url('../images/whiteboard/blank.jpg')";
+        Mycanvas.style.backgroundImage = "url('../images/whiteboard/blank.jpg')";
 
         var data = "blank.jpg";
         socket.emit('changeBackground', data);
     });
 
 
-//===============================================Handling Circles OR Brush
-
-    $("#circle").click(function () {
-        tool2.activate();
-    });
-
-    $("#brush").click(function () {
-        tool1.activate();
-        Dcolor = "black";
-    });
-
-
-    //my initialization for brush type
+//==============================my initialization for brush
     var Dcolor = "";
     var Dsize = 2;
-    var paths2 = new Array();
-    var paths3 = new Array();
+    var paths2 = new Array(); //holds my paths
+    var paths3 = new Array(); //holds my received paths
+    // var Clearpath = new Array();
+    var pathPoints; //holds every path`s data
+    var savePaths = new  Array(); //container of all path points
+    var clearedScreen = false;
+    // console.log(Clearpath.length);
     //-----------------Brush--------------------
     var tool1 = new Tool();
     tool1.minDistance = 10;
 
     var path2; //myPath
     var path3; //myReceivedPath
+
+//===============================================Handling brush color_change
+    $("#black").click(function () {
+        Dcolor = "black";
+    });
+
+    $("#white").click(function () {
+        Dcolor = "white";
+    });
+
+    $("#red").click(function () {
+        Dcolor = "red";
+    });
+
+    $("#green").click(function () {
+        Dcolor = "green";
+    });
+
+    $("#blue").click(function () {
+        Dcolor = "blue";
+    });
+
+    $("#yellow").click(function () {
+        Dcolor = "yellow";
+    });
+
+//===============================================Handling brush size change
+    $("#xsmall").click(function () {
+        Dsize = 2;
+    });
+
+    $("#small").click(function () {
+        Dsize = 4;
+    });
+
+    $("#medium").click(function () {
+        Dsize = 8;
+    });
+
+    $("#large").click(function () {
+        Dsize = 12;
+    });
+
+    $("#xlarge").click(function () {
+        Dsize = 25;
+    });
+
+
     tool1.onMouseDown = function onMouseDown(event) {
         // Create a new path and select it:
         path2 = new Path();
-        //===============================================Handling brush color change
-        $("#black").click(function () {
-            Dcolor = "black";
-        });
-
-        $("#white").click(function () {
-            Dcolor = "white";
-        });
-
-        $("#red").click(function () {
-            Dcolor = "red";
-        });
-
-        $("#green").click(function () {
-            Dcolor = "green";
-        });
-
-        $("#blue").click(function () {
-            Dcolor = "blue";
-        });
-
-        $("#yellow").click(function () {
-            Dcolor = "yellow";
-        });
-
         path2.strokeColor = Dcolor;
-
-        //===============================================Handling brush size change
-        $("#xsmall").click(function () {
-            Dsize = 2;
-        });
-
-        $("#small").click(function () {
-            Dsize = 4;
-        });
-
-        $("#medium").click(function () {
-            Dsize = 8;
-        });
-
-        $("#large").click(function () {
-            Dsize = 12;
-        });
-
-        $("#xlarge").click(function () {
-            Dsize = 25;
-        });
-
         path2.strokeWidth = Dsize;
-
         // Add a segment to the path where you clicked
         path2.add(event.point);
         // console.log("My Path down: " + path2.id);
@@ -127,6 +121,10 @@ window.onload = function () {
             Dsize: Dsize
         };
 
+        pathPoints = new Array();
+
+        pathPoints.push(data);
+
         socket.emit('brush1', data);
     };
 
@@ -135,16 +133,26 @@ window.onload = function () {
         path2.add(event.point);
 
         console.log("Drawing : " + event.point.x);
+        // console.log("Event : " + event);
 
         // console.log("My Path drag: " + path2.id);
+        var data = {
+            pnt: event.point,
+            Dcolor: Dcolor,
+            Dsize: Dsize
+        };
 
+        pathPoints.push(data);
 
         socket.emit('brush2', event.point);
     };
 
+//=============================Saving My paths and Handling undo
     tool1.onMouseUp = function (event) {
 
         paths2.push(path2);
+        savePaths.push(pathPoints);
+
         socket.emit('mouse_up', "UP");
     };
 
@@ -174,16 +182,42 @@ window.onload = function () {
 
     $("#undo").click(function () {
         // canvas.parentNode.removeChild(path2);
+        // console.log("Entered undo");
+        // console.log("paths2 Size: " + paths2.length );
+        // console.log("Clear size: " + Clearpath.length);
+        // if (clearedScreen){
+        //
+        //
+        //     // console.log(savePaths);
+        //
+        //     for(var i = 0;i<savePaths.length;i++){
+        //
+        //         var newPath = new Path();
+        //         newPath.strokeColor = savePaths[i][0].Dcolor;
+        //         newPath.strokeWidth = savePaths[i][0].Dsize;
+        //
+        //         for(var j = 0;j<savePaths[i].length;j++) {
+        //
+        //             newPath.add(savePaths[i][j].pnt);
+        //             console.log(savePaths[i][j]);
+        //
+        //         }
+        //     }
+        //     clearedScreen = false;
+        //
+        //
+        //     console.log("Entered clear");
+        //
+        // }
         if (paths2.length >0){
             paths2[paths2.length - 1].remove();
             paths2.pop();
-
         }
         socket.emit('undo', "undo");
     });
 
 
-    //receiving any sent data from server
+//=======================receiving any sent data from server
     socket.on('brush1',
         // When we receive data
         function (data) {
@@ -215,11 +249,11 @@ window.onload = function () {
         }
     );
 
-
+//=========================================================Snapshot
     var audio = new Audio('../sounds/cameraFlash.mp3');
     $("#snapshot").click(function () {
         // these two lines create an Image Object and load it with what/s on the canvas
-        var thisImage = new Image();
+        // var thisImage = new Image();
         thisImage = document.getElementById('myCanvas').toDataURL();
 
         $('.flash')
@@ -230,14 +264,7 @@ window.onload = function () {
 
         audio.play();
 
-
-
-        downloadURI(thisImage,"image.png");
-
-        // localStorage.setItem("imgData", thisImage);
-
-        // var win=window.open();
-        // win.document.write("<img src='"+thisImage+"'/>");
+        downloadURI(thisImage,"myDrawing.png");
     });
 
     function downloadURI(uri, name) {
@@ -254,10 +281,33 @@ window.onload = function () {
         $('.flash').hide();
     });
 
+//====================================Clear screen
+    var context = Mycanvas.getContext('2d');
+    $("#clearScreen").click(function () {
+
+        context.clearRect(0, 0, Mycanvas.width, Mycanvas.height);
+
+        clearedScreen = true;
+        // Clearpath = paths2.slice();
+        // console.log(Clearpath.length)
+        // paths2 = [];
+        while(paths2.length > 0) {
+            paths2[paths2.length - 1].remove();
+            paths2.pop();        }
+        // print(context);
+        // console.log(context);
+    });
 
 
+//===============================================Handling Circles OR Brush
+    $("#circle").click(function () {
+        tool2.activate();
+    });
 
-
+    $("#brush").click(function () {
+        tool1.activate();
+        Dcolor = "black";
+    });
 
     //---------------Circles------------------
     var tool2 = new Tool();
@@ -327,6 +377,5 @@ window.onload = function () {
     });
 
 };
-
 //======================================================================================================================
 
