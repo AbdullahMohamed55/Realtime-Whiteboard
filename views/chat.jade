@@ -1,0 +1,20 @@
+// This code is for testing
+extends layout
+
+block content
+    div(class ="chat")
+        div(class="chat-title")
+            div(class = "message-input")
+                input(type='text', placeholder="Username...")#userInput
+            button(class="message-submit" )#usernameSubmit UserName
+            figure(class="avatar")
+                img(src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg")
+
+        div(class ="messages")
+            div(class="messages-content")#messageContent
+
+        div(class = "message-box")
+            textarea(class="message-input",type="text", placeholder="Type message...")#messageInput
+
+            button(type="submit",class="message-submit")#submit Send
+    div(class="bg")
