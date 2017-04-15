@@ -155,7 +155,7 @@ function newConnection(socket) {
             console.log("Received data: " + data);
 
             // Send it to all other clients
-            socket.broadcast.emit('drawCircle', data);
+            socket.to(socket.url).emit('drawCircle', data);
         }
     );
 
@@ -166,7 +166,7 @@ function newConnection(socket) {
             console.log("Received data: " + data);
 
             // Send it to all other clients
-            socket.broadcast.emit('changeBackground', data);
+            socket.to(socket.url).emit('changeBackground', data);
         }
     );
 
@@ -175,7 +175,7 @@ function newConnection(socket) {
             // Data comes in as whatever was sent, including objects
             console.log("Received data1: " + data);
             // Send it to all other clients
-            socket.broadcast.emit('brush1', data);
+            socket.to(socket.url).emit('brush1', data);
         }
     );
 
@@ -184,7 +184,7 @@ function newConnection(socket) {
             // Data comes in as whatever was sent, including objects
             console.log("Received data2: " + data);
             // Send it to all other clients
-            socket.broadcast.emit('brush2', data);
+            socket.to(socket.url).emit('brush2', data);
         }
     );
 
@@ -193,13 +193,13 @@ function newConnection(socket) {
             // Data comes in as whatever was sent, including objects
             console.log("Received undo request: " + data);
             // Send it to all other clients
-            socket.broadcast.emit('undo', data);
+            socket.to(socket.url).emit('undo', data);
         }
     );
 
     socket.on('mouse_up',
         function(data) {
-            socket.broadcast.emit('mouse_up', data);
+            socket.to(socket.url).emit('mouse_up', data);
         }
     );
 
