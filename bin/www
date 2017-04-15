@@ -38,7 +38,7 @@ var io = require('socket.io')(server);
 //NAIVE SOLUTION!
 var roomArr = [];
 var roomHist = [];
-
+var roomUrl ={};
 // open socket conn whenever a new room is created
 io.sockets.on("connection", newConnection);
 

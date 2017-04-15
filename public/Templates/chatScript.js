@@ -62,12 +62,32 @@ function sentMessage() {
         selector.val('');
     }
 }
-$(window).load(function() {
 
+$(window).load(function() {
+    swal({
+            title: "UserName",
+            type: "input",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            animation: "slide-from-top",
+            inputPlaceholder: "Write in your username"
+        },
+        function (inputValue) {
+            if (inputValue === false) return false;
+
+            if (inputValue === "") {
+                swal.showInputError("You need to write something!");
+                return false
+            }
+            username = cleanInput(inputValue.trim());
+
+            setUsername();
+            swal("Nice!", "Welcome " + inputValue, "success");
+        });
     $('#submit').click(function() {
         sentMessage();
     });
-    $('#usernameSubmit').click(function() {setUsername()});
+    //$('#usernameSubmit').click(function() {setUsername()});
     $messages.mCustomScrollbar();
 
 });
@@ -84,7 +104,7 @@ function cleanInput (input) {
 
 // Sets the client's username
 function setUsername () {
-    var username = cleanInput($("#userInput").val().trim());
+    //var username = cleanInput($("#userInput").val().trim());
 
     // If the username is valid
     if (username) {
