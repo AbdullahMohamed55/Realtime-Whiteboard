@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "name": "realtime-whiteboar",
-=======
-  "name": "dum",
->>>>>>> 8d0a792c3a50fd34527decb65b370c4506b7e471
+  "name": "realtime-whiteboard",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -13,16 +9,10 @@
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.0",
-<<<<<<< HEAD
     "express": "^4.14.1",
     "jade": "~1.11.0",
     "morgan": "~1.7.0",
     "paper": "^0.10.3",
-=======
-    "express": "~4.14.1",
-    "jade": "~1.11.0",
-    "morgan": "~1.7.0",
->>>>>>> 8d0a792c3a50fd34527decb65b370c4506b7e471
     "serve-favicon": "~2.3.2",
     "socket.io": "^1.7.3"
   }
