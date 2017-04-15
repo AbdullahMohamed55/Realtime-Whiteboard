@@ -5,6 +5,7 @@ socket = io.connect('http://localhost:3000');
 window.onload = function () {
     var Mycanvas = document.getElementById('myCanvas');
     paper.setup('myCanvas');
+    console.log("Canvas loadred");
 
 
     //===============================================Handling background change

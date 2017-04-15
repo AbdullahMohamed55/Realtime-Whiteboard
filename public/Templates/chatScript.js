@@ -1,42 +1,7 @@
-/*var socket = io.connect();
-
- socket.on('connect', function() {
- console.log('connected');
- });
-
-
- $(function() {
-
- $("#userSet").click(function() {setUser()});
- $("#submit").click(function() {sentMessage();});
- });
- socket.on('message', function(data) {
-
- addMessage(data['message'], data['user']);
- });
- function addMessage(msg, user) {
- $("#chatEntries").append('<div class="message"><p>' + user + ' : ' + msg + '</p></div>');
- }
- function sentMessage() {
- selector = $('#messageInput')
- if (selector.val() != "")
- {
- socket.emit('message',selector.val());
- addMessage(selector.val(), "Me", new Date().toISOString(), true);
- selector.val('');
- }
- }
- function setUser() {
- if ($("#userInput").val() != "")
- {
- socket.emit('setUser', $("#userInput").val());
- $('#chatControls').show();
- $('#userInput').hide();
- $('#userSet').hide();
- }
- }*/
 // --------------------- testing code ------------------------
 var typing =false;
+var toggle = true;
+>>>>>>> chatDrawing
 var TYPING_TIMER_LENGTH = 400; // ms
 var socket = io.connect();
 var username;
@@ -47,16 +12,14 @@ var clientData = {
     roomname : "space",
     url : ""
 };
+var COLORS = [
+    '#e21400', '#91580f', '#f8a700', '#f78b00',
+    '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
+    '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
+];
 socket.on('connect', function() {
     console.log("I am connected to server");
 });
-/*
-
-
-socket.on('message', function(msg,usr) {
-
-    insertMessage(msg,usr);
-});*/
 
 function sentMessage() {
     selector = $('#messageInput')
@@ -68,6 +31,17 @@ function sentMessage() {
         selector.val('');
     }
 }
+
+$('#minmizeChat').click(function () {
+    if(toggle){
+        $('.chat').css("height","10vh");
+        toggle =false;
+    }
+    else{
+        $('.chat').css("height","80vh");
+        toggle = true;
+    }
+});
 
 $(window).load(function() {
     swal({
@@ -91,6 +65,7 @@ $(window).load(function() {
             setUsername();
             swal("Nice!", "Welcome " + inputValue, "success");
 
+            addtoroom();
         });
 
     $('#submit').click(function() {
@@ -103,20 +78,37 @@ $(window).load(function() {
 
 });
 
+$('#share').click(function () {
+    swal("Token generated !", clientData.url, "success");
+
+});
 ///////////////////////
 
 // Prevents input from having injected markup
 function cleanInput (input) {
     return $('<div/>').text(input).text();
 }
-function addtoroom(){
 
+// Gets the color of a username through our hash function
+function getUsernameColor (username) {
+    // Compute hash code
+    var hash = 7;
+    for (var i = 0; i < username.length; i++) {
+        hash = username.charCodeAt(i) + (hash << 5) - hash;
+    }
+    // Calculate color
+    var index = Math.abs(hash % COLORS.length);
+    return COLORS[index];
+}
+function addtoroom(){
 
     if(username){
 
         swal({
                 title: "Enter Url",
                 type: "warning",
+
+                text: "To enter url press ok or create a new room",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Ok",
@@ -177,6 +169,7 @@ function setUsername () {
         $currentInput = $inputMessage.focus();
         */
         clientData.username = username;
+        $('<div>' +  username  + '</div>').appendTo($('.chat-title')).addClass('new');
         // Tell the server your username
         //ON CONNECT
         /*
