@@ -1,7 +1,6 @@
 // --------------------- testing code ------------------------
 var typing =false;
 var toggle = true;
->>>>>>> chatDrawing
 var TYPING_TIMER_LENGTH = 400; // ms
 var socket = io.connect();
 var username;
