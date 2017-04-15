@@ -1,16 +1,16 @@
 var express = require('express');
 var paper = require('paper');
-
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+
+var index = require('./routes/index');
+var users = require('./routes/users');
 var whiteboard = require('./routes/whiteboard');
 
 var app = require('express')();
-var index = require('./routes/index');
-var users = require('./routes/users');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

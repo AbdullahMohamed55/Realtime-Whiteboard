@@ -19,6 +19,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -201,7 +202,6 @@ function newConnection(socket) {
             socket.broadcast.emit('mouse_up', data);
         }
     );
-
 
     // when the user disconnects.. perform this
     socket.on('disconnect', function () {
