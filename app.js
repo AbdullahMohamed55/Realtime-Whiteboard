@@ -1,4 +1,5 @@
 var express = require('express');
+var paper = require('paper');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -7,6 +8,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var whiteboard = require('./routes/whiteboard');
 
 var app = require('express')();
 
@@ -24,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/whiteboard', whiteboard);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

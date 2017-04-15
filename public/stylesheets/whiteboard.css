@@ -1,0 +1,134 @@
+ul.sdt_menu{
+	margin:0;
+	padding:0;
+	list-style: none;
+	font-family:"Myriad Pro", "Trebuchet MS", sans-serif;
+	font-size:14px;
+	width:200vh;
+}
+ul.sdt_menu a{
+	text-decoration:none;
+	outline:none;
+}
+ul.sdt_menu li{
+	float:left;
+	width:22vh;
+	height:10vh;
+	position:relative;
+	cursor:pointer;
+}
+ul.sdt_menu li > a{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:22vh;
+	height:10vh;
+	z-index:12;
+	background:transparent url("../images/whiteboard/overlay.png") no-repeat bottom right;
+	-moz-box-shadow:0px 0px 2px #000 inset;
+	-webkit-box-shadow:0px 0px 2px #000 inset;
+	box-shadow:0px 0px 2px #000 inset;
+}
+ul.sdt_menu li a img{
+	border:none;
+	position:absolute;
+	width:0px;
+	height:0px;
+	bottom:0px;
+	left:85px;
+	z-index:100;
+	-moz-box-shadow:0px 0px 4px #000;
+	-webkit-box-shadow:0px 0px 4px #000;
+	box-shadow:0px 0px 4px #000;
+}
+ul.sdt_menu li span.sdt_wrap{
+	position:absolute;
+	top:1vh;
+	left:0px;
+	width:22vh;
+	height:10vh;
+	z-index:15;
+}
+ul.sdt_menu li span.sdt_active{
+	position:absolute;
+	background:#111;
+	top:10vh;
+	width:22vh;
+	/*height:22vh;*/
+	height:0px;
+	left:0px;
+	z-index:14;
+	-moz-box-shadow:0px 0px 4px #000 inset;
+	-webkit-box-shadow:0px 0px 4px #000 inset;
+	box-shadow:0px 0px 4px #000 inset;
+}
+ul.sdt_menu li span span.sdt_link,
+ul.sdt_menu li span span.sdt_descr,
+ul.sdt_menu li div.sdt_box a{
+	margin-left:5px;
+	/*text-transform:lowercase;*/
+	text-shadow:1px 1px 1px #000;
+}
+ul.sdt_menu li span span.sdt_link{
+	color:#fff;
+	font-size:2.8vh;
+	float:left;
+	clear:both;
+}
+ul.sdt_menu li span span.sdt_descr{
+	color:#0B75AF;
+	float:left;
+	clear:both;
+	width:20vh; /*For dumbass IE7*/
+	font-size:10px;
+	letter-spacing:1px;
+	margin-top:0.5vh;
+
+}
+ul.sdt_menu li div.sdt_box{
+	display:block;
+	position:absolute;
+	width:22vh;
+	overflow:hidden;
+	height:25vh;
+	top:10vh;
+	left:0px;
+	display:none;
+	background:#000;
+}
+ul.sdt_menu li div.sdt_box a{
+	float:left;
+	clear:both;
+	line-height:4vh;
+	color:#0B75AF;
+}
+ul.sdt_menu li div.sdt_box a:first-child{
+	margin-top:1vh;
+}
+ul.sdt_menu li div.sdt_box a:hover{
+	color:#fff;
+}
+
+/*Dola*/
+canvas {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	z-index: -3;
+	width: 100%;
+	height:100%;
+	margin-top: 12vh;
+
+}
+
+.flash{
+
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width:100%;
+	height:100%;
+	background-color:#fff;
+	z-index: 100;
+	/*opacity: 0.2;*/
+}
