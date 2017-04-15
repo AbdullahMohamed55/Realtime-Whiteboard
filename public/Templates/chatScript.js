@@ -78,6 +78,7 @@ $(window).load(function() {
 });
 
 $('#share').click(function () {
+
     swal("Token generated !", clientData.url, "success");
 
 });
@@ -162,11 +163,11 @@ function setUsername () {
     // If the username is valid
     if (username) {
         /*
-        $loginPage.fadeOut();
-        $chatPage.show();
-        $loginPage.off('click');
-        $currentInput = $inputMessage.focus();
-        */
+         $loginPage.fadeOut();
+         $chatPage.show();
+         $loginPage.off('click');
+         $currentInput = $inputMessage.focus();
+         */
         clientData.username = username;
         $('<div>' +  username  + '</div>').appendTo($('.chat-title')).addClass('new');
         // Tell the server your username
@@ -189,10 +190,12 @@ socket.on('updateNewJoiner',function(pastData){
 });
 
 // Whenever the server emits 'login', log the login message
-socket.on('login', function (numUsers) {
+socket.on('login', function (numUsers,url) {
     //connected = true;
     // Display the welcome message
+    console.log("URL"+url);
     var message = "Welcome to " + clientData.roomname;//TODO USE TIME STAMP
+    clientData.url = url;
     log(message);
 
     //addParticipantsNumbers(numUsers);
@@ -232,42 +235,42 @@ socket.on('stop typing', function (data) {
     removeChatTyping();
 });
 /*
-// Adds the visual chat typing message
-function addChatTyping (data) {
-    data.typing = true;
-    data.message = 'is typing';
-    addChatMessage(data);
-}
+ // Adds the visual chat typing message
+ function addChatTyping (data) {
+ data.typing = true;
+ data.message = 'is typing';
+ addChatMessage(data);
+ }
 
-// Removes the visual chat typing message
-function removeChatTyping (data) {
-    getTypingMessages(data).fadeOut(function () {
-        $(this).remove();
-    });
-}
-// Gets the 'X is typing' messages of a user
-function getTypingMessages (data) {
-return $('.typing.message').filter(function (i) {
-return $(this).data('username') === data.username;
-});
-}
+ // Removes the visual chat typing message
+ function removeChatTyping (data) {
+ getTypingMessages(data).fadeOut(function () {
+ $(this).remove();
+ });
+ }
+ // Gets the 'X is typing' messages of a user
+ function getTypingMessages (data) {
+ return $('.typing.message').filter(function (i) {
+ return $(this).data('username') === data.username;
+ });
+ }
 
-*/
+ */
 //END TODO
 // Gets the color of a username through our hash function
 /*
-//TODO Bonus
-function getUsernameColor (username) {
-    // Compute hash code
-    var hash = 7;
-    for (var i = 0; i < username.length; i++) {
-        hash = username.charCodeAt(i) + (hash << 5) - hash;
-    }
-    // Calculate color
-    var index = Math.abs(hash % COLORS.length);
-    return COLORS[index];
-}
-*/
+ //TODO Bonus
+ function getUsernameColor (username) {
+ // Compute hash code
+ var hash = 7;
+ for (var i = 0; i < username.length; i++) {
+ hash = username.charCodeAt(i) + (hash << 5) - hash;
+ }
+ // Calculate color
+ var index = Math.abs(hash % COLORS.length);
+ return COLORS[index];
+ }
+ */
 socket.on('disconnect', function () {
     log('you have been disconnected');
 });
@@ -286,14 +289,14 @@ socket.on('reconnect_error', function () {
 
 ////////////////////////////
 /*
-function setUser() {
+ function setUser() {
 
-    if ($("#userInput").val() != "")
-    {
-        socket.emit('setUser', $("#userInput").val());
-        username = $("#userInput").val()
-    }
-}*/
+ if ($("#userInput").val() != "")
+ {
+ socket.emit('setUser', $("#userInput").val());
+ username = $("#userInput").val()
+ }
+ }*/
 ////////////////////
 function updateScrollbar() {
     $messages.mCustomScrollbar("update").mCustomScrollbar('scrollTo', 'bottom', {
