@@ -178,6 +178,7 @@ function newConnection(socket) {
             // Data comes in as whatever was sent, including objects
             //console.log("Received data: " + data);
 
+            bckgnd[socket.url] = data
             // Send it to all other clients
             socket.to(socket.url).emit('changeBackground', data);
         }

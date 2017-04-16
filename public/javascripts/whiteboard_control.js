@@ -148,6 +148,12 @@ window.onload = function () {
 
         socket.emit('brush2', event.point);
     };
+//bckgnd
+socket.on('updateNewJoinerDrawBckgnd',
+    function(bckgnd){
+        Mycanvas.style.backgroundImage = "  url('../images/whiteboard/" + bckgnd + " ') ";
+    
+});
 
 //=======================receiving any sent data from server
 socket.on('brush1',
