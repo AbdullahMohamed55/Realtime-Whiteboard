@@ -44,9 +44,10 @@ $('#minmizeChat').click(function () {
 
 $(window).load(function() {
     swal({
-            title: "UserName",
+            title: "Welcome to DrawIt",
             type: "input",
-            showCancelButton: true,
+            text:"Please enter your username",
+            showCancelButton: false,
             closeOnConfirm: false,
             animation: "slide-from-top",
             inputPlaceholder: "Write in your username",
@@ -122,7 +123,7 @@ function addtoroom(){
                     swal({
                             title: "Room URL",
                             type: "input",
-                            showCancelButton: true,
+                            showCancelButton: false,
                             closeOnConfirm: false,
                             animation: "slide-from-top",
                             inputPlaceholder: "Write in your URl",
