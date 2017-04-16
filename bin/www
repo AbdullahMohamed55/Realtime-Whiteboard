@@ -31,8 +31,11 @@ server.on('listening', onListening);
 var io = require('socket.io')(server);
 //TODO USE A DB (reddis)
 //NAIVE SOLUTION!
-var roomArr = [];
+var roomArr = [];//num of users in each room
 var roomHist = [];
+//TODO add histroy of drawing & bckgnd settings
+var drawHist = [];
+var bckgnd = [];
 var roomUrl = new Object();
 // open socket conn whenever a new room is created
 io.sockets.on("connection", newConnection);
@@ -91,11 +94,16 @@ function newConnection(socket) {
             roomArr[data.url] += 1;
             //supply new user with room history
             io.to(socket.id).emit('updateNewJoiner',roomHist[data.url]);
+            io.to(socket.id).emit('updateNewJoinerDraw',drawHist[data.url]);
+            io.to(socket.id).emit('updateNewJoinerDrawBckgnd',bckgnd[data.url]);
+
 
         }
         else{
             //init this room history
             roomHist[data.url] = [];
+            drawHist[data.url] = [];
+            bckgnd[data.url] = '';
             roomArr[data.url] = 1;
 
         }
