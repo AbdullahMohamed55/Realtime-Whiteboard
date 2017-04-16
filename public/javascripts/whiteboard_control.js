@@ -1,6 +1,7 @@
 paper.install(window);
 var socket;
-socket = io.connect('http://localhost:3000');
+// socket = io.connect('http://localhost:3000');
+socket = io();
 
 window.onload = function () {
     var Mycanvas = document.getElementById('myCanvas');
