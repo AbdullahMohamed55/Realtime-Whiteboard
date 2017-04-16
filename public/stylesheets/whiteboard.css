@@ -6,10 +6,15 @@ ul.sdt_menu{
 	font-size:14px;
 	/*width:200vh;*/
 	width:100%;
+	/*position: inherit;*/
+	display:block;
+	z-index: 5;
+
 }
 ul.sdt_menu a{
 	text-decoration:none;
 	outline:none;
+	z-index: 5;
 }
 ul.sdt_menu li{
 	float:left;
@@ -17,6 +22,7 @@ ul.sdt_menu li{
 	height:10vh;
 	position:relative;
 	cursor:pointer;
+	z-index: 5;
 }
 ul.sdt_menu li > a{
 	position:absolute;
@@ -75,6 +81,7 @@ ul.sdt_menu li span span.sdt_link{
 	font-size:2.8vh;
 	float:left;
 	clear:both;
+	z-index: 5;
 }
 ul.sdt_menu li span span.sdt_descr{
 	color:#0B75AF;
@@ -84,6 +91,7 @@ ul.sdt_menu li span span.sdt_descr{
 	font-size:10px;
 	letter-spacing:1px;
 	margin-top:0.5vh;
+	z-index: 5;
 
 }
 ul.sdt_menu li div.sdt_box{
