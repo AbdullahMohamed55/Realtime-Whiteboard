@@ -323,10 +323,12 @@ function setDate(){
 
 function insertMessage(user,msg,id) {
     setDate();
+    //security concerns
     if (socket.id == id) {
         if ($.trim(msg) == '') {
             return false;
         }
+
         //$("#messageContent").append('<div class="timestamp">'+usr+'</div>');
         //$("#messageContent").append('<div class="message message-personal ">' + msg + '</div>');
         $('<div class="message message-personal">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
