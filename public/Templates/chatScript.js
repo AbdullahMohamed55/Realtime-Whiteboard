@@ -190,12 +190,12 @@ socket.on('updateNewJoiner',function(pastData){
 });
 
 // Whenever the server emits 'login', log the login message
-socket.on('login', function (numUsers,url) {
+socket.on('login', function (data) {
     //connected = true;
     // Display the welcome message
-    console.log("URL"+url);
+    console.log("URL "+data.url);
     var message = "Welcome to " + clientData.roomname;//TODO USE TIME STAMP
-    clientData.url = url;
+    clientData.url = data.url;
     log(message);
 
     //addParticipantsNumbers(numUsers);
