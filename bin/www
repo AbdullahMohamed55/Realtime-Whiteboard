@@ -210,6 +210,13 @@ function newConnection(socket) {
         }
     );
 
+    socket.on('clear',
+        function(data) {
+
+            socket.to(socket.url).emit('clear', data);
+        }
+    );
+
     socket.on('mouse_up',
         function(data) {
             socket.to(socket.url).emit('mouse_up', data);
