@@ -70,7 +70,7 @@ function newConnection(socket) {
             // Generate a v4 (random) id
             var randomID = uuid.v4(); // -> '110ec58a-a0f2-4ac4-8393-c866d813b8d1'
 
-            var url = 'localhost:3000/' + randomID;  // or + timeBasedID
+            var url = randomID;  // or + timeBasedID
 
             //insert url and roomname
             data.url =url;
