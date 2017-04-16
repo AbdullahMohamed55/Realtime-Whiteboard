@@ -110,13 +110,58 @@ ul.sdt_menu li div.sdt_box a:hover{
 }
 
 /*Dola*/
+span.reference {
+	position: fixed;
+	left: 10px;
+	bottom: 10px;
+	font-size: 12px;
+}
+
+span.reference a {
+	color: #aaa;
+	text-transform: uppercase;
+	text-decoration: none;
+	text-shadow: 1px 1px 1px #000;
+	margin-right: 30px;
+}
+
+span.reference a:hover {
+	color: #ddd;
+}
+
+ul.sdt_menu {
+	margin-top: 1vh;
+}
+
+h1.title {
+	text-indent: -9000px;
+	/*background:transparent url(title.png) no-repeat top left;*/
+	width: 633px;
+	height: 69px;
+}
+
+body {
+	/*background: #333 url('../images/whiteboard/dark.jpg') repeat top left;*/
+	font-family: Arial;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 12px;
+
+	/*position: absolute;*/
+	/*left: 0px;*/
+	/*top: 0px;*/
+	/*z-index: -3;*/
+	/*width: 100%;*/
+	/*height:100%;*/
+
+}
+
 canvas {
 	position: absolute;
 	left: 0px;
 	top: 0px;
 	z-index: -3;
 	width: 100%;
-	height:100%;
+	height:30%;
 	margin-top: 12vh;
 
 }

@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>DrawIt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height:device-height">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="description" content="Slide Down Box Menu with jQuery and CSS3"/>
     <meta name="keywords" content="jquery, css3, sliding, box, menu, cube, navigation, portfolio, thumbnails"/>
@@ -22,40 +23,7 @@
     <script src="../javascripts/whiteboard_control.js"></script>
 
     <style>
-        body {
-            background: #333 url('../images/whiteboard/dark.jpg') repeat top left;
-            font-family: Arial;
-        }
 
-        span.reference {
-            position: fixed;
-            left: 10px;
-            bottom: 10px;
-            font-size: 12px;
-        }
-
-        span.reference a {
-            color: #aaa;
-            text-transform: uppercase;
-            text-decoration: none;
-            text-shadow: 1px 1px 1px #000;
-            margin-right: 30px;
-        }
-
-        span.reference a:hover {
-            color: #ddd;
-        }
-
-        ul.sdt_menu {
-            margin-top: 1vh;
-        }
-
-        h1.title {
-            text-indent: -9000px;
-            /*background:transparent url(title.png) no-repeat top left;*/
-            width: 633px;
-            height: 69px;
-        }
     </style>
 </head>
 
@@ -87,7 +55,7 @@
     </div>
     <!--Ballo-->
 
-    <ul id="sdt_menu" class="sdt_menu">
+    <ul id="sdt_menu" class="sdt_menu" resize="true">
         <li>
             <a href="#">
                 <img src="../images/whiteboard/dark.jpg" alt=""/>
