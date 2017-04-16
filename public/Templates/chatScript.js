@@ -33,7 +33,7 @@ function sentMessage() {
 
 $('#minmizeChat').click(function () {
     if(toggle){
-        $('.chat').css("height","10vh");
+        $('.chat').css("height","7vh");
         toggle =false;
     }
     else{
@@ -171,6 +171,7 @@ function setUsername () {
          */
         clientData.username = username;
         $('<div>' +  username  + '</div>').appendTo($('.chat-title')).addClass('new');
+        $('#myColor').css('background-color', getUsernameColor(clientData.username));
         // Tell the server your username
         //ON CONNECT
         /*
@@ -185,7 +186,7 @@ function setUsername () {
 
 socket.on('updateNewJoiner',function(pastData){
     for(i in pastData){
-        insertMessage(pastData[i].username, pastData[i].message);
+        insertMessage(pastData[i].username, pastData[i].message,pastData[i].id);
         console.log(pastData[i]);
     }
 });
@@ -205,7 +206,7 @@ socket.on('login', function (data) {
 // Whenever the server emits 'new message', update the chat body
 socket.on('new message', function (data) {
     console.log("new mess");
-    insertMessage(data.username,data.message);
+    insertMessage(data.username,data.message,data.id);
 });
 
 function addParticipantsNumbers(numUsers){
@@ -320,9 +321,9 @@ function setDate(){
     updateScrollbar();
 }
 
-function insertMessage(user,msg) {
+function insertMessage(user,msg,id) {
     setDate();
-    if (clientData.username == user) {
+    if (socket.id == id) {
         if ($.trim(msg) == '') {
             return false;
         }
@@ -332,10 +333,9 @@ function insertMessage(user,msg) {
 
     }
     else{
-        $('<div class="message new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg" /></figure>'
+        var color_user = getUsernameColor(user);
+        $('<div class="message new"><figure class="avatar" style="background-color:'+getUsernameColor(user)+'"></figure>'
             + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
-        //$("#messageContent").append('<div class="message new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws' +
-        //    '.com/s.cdpn.io/156381/profile/profile-80_4.jpg"' + ' />' + '</figure>' + msg + '</div>');
         $('.message:last').append('<div class="userstamp">'+user+'</div>')
     }
 
@@ -354,9 +354,9 @@ $(window).on('keydown', function(e) {
 })
 
 function addChatTyping (user) {
-    $('<div class="message loading new"><figure class="avatar"><img src="http:' +
-        '//s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg" /></figure><span></span></div>').appendTo($('.mCSB_container')).addClass('new');
-    $('.message:last').append('<div class="userstamp">'+user+' is typing...'+'</div>')
+    $('<div class="message loading new"><figure class="avatar" style="background-color:'+getUsernameColor(user)+'"></figure></div>').appendTo($('.mCSB_container')).addClass('new');
+    $('.message:last').append('<div>'+user+' is typing...'+'</div>');
+    updateScrollbar();
 }
 function removeChatTyping () {
     $('.message.loading').remove();
