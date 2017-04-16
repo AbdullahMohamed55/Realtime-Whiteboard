@@ -167,7 +167,6 @@ canvas {
 }
 
 .flash{
-
 	position: absolute;
 	left: 0px;
 	top: 0px;
@@ -175,5 +174,4 @@ canvas {
 	height:100%;
 	background-color:#fff;
 	z-index: 100;
-	/*opacity: 0.2;*/
 }
