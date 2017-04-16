@@ -128,11 +128,12 @@ function newConnection(socket) {
     // when the client emits 'new message', this listens and executes
     socket.on('new message', function (data) {
         // we tell the client to execute 'new message'
-        roomHist[socket.url].push({username: socket.username,message: data});
+        roomHist[socket.url].push({username: socket.username,message: data,id:socket.id});
         //TODO make it socket.to
         io.in(socket.url).emit('new message', {
             username: socket.username,
-            message: data
+            message: data,
+            id : socket.id
         });
     });
 
