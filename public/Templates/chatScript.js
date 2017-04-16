@@ -8,7 +8,7 @@ var $messages = $('.messages-content'),
     d, h, m;
 var clientData = {
     username : "",
-    roomname : "space",
+    roomname : "",
     url : ""
 };
 var COLORS = [

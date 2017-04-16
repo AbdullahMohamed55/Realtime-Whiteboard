@@ -3,8 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.sendFile('/home/zidan/RealtimeWhiteboard/views/whiteboard.html');
-
+    res.sendFile('/home/abdullah/Desktop/WhiteBoard/views/whiteboard.html');
 });
 
 module.exports = router;
