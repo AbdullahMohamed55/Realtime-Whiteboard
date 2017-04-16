@@ -4,11 +4,12 @@ var toggle = true;
 var TYPING_TIMER_LENGTH = 400; // ms
 var socket = io.connect();
 var username;
+var unseenmsg = 0;
 var $messages = $('.messages-content'),
     d, h, m;
 var clientData = {
     username : "",
-    roomname : "",
+    roomname : "Draw It",
     url : ""
 };
 var COLORS = [
@@ -35,8 +36,14 @@ $('#minmizeChat').click(function () {
     if(toggle){
         $('.chat').css("height","7vh");
         toggle =false;
+        if (unseenmsg!=0){
+            $('#countermsg').text(unseenmsg);
+            $('#countermsg').css("display",'inline');
+        }
     }
     else{
+        $('#countermsg').css("display",'none');
+        unseenmsg = 0;
         $('.chat').css("height","80vh");
         toggle = true;
     }
@@ -206,6 +213,7 @@ socket.on('login', function (data) {
 // Whenever the server emits 'new message', update the chat body
 socket.on('new message', function (data) {
     console.log("new mess");
+
     insertMessage(data.username,data.message,data.id);
 });
 
@@ -335,6 +343,11 @@ function insertMessage(user,msg,id) {
 
     }
     else{
+        if(!toggle){
+            unseenmsg+=1;
+            $('#countermsg').text(unseenmsg);
+            $('#countermsg').css("display",'inline');
+        }
         var color_user = getUsernameColor(user);
         $('<div class="message new"><figure class="avatar" style="background-color:'+getUsernameColor(user)+'"></figure>'
             + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
@@ -356,7 +369,7 @@ $(window).on('keydown', function(e) {
 })
 
 function addChatTyping (user) {
-    $('<div class="message loading new"><figure class="avatar" style="background-color:'+getUsernameColor(user)+'"></figure></div>').appendTo($('.mCSB_container')).addClass('new');
+    $('<div class="message loading"><figure class="avatar" style="background-color:'+getUsernameColor(user)+'"></figure></div>').appendTo($('.mCSB_container')).addClass('new');
     $('.message:last').append('<div>'+user+' is typing...'+'</div>');
     updateScrollbar();
 }
@@ -381,21 +394,3 @@ function updateTyping () {
     }, TYPING_TIMER_LENGTH);
 }
 
-function fakeMessage() {
-    if ($('.message-input').val() != '') {
-        return false;
-    }
-    $('<div class="message loading new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws.com/s.cdpn.io' +
-        '/156381/profile/profile-80_4.jpg" /></figure><span></span></div>').appendTo($('.mCSB_container'));
-    //updateScrollbar();
-
-    setTimeout(function() {
-        $('.message.loading').remove();
-        $('<div class="message new"><figure class="avatar"><img src="http://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80_4.jpg"' + ' />' +
-            '</figure>' + "fuck You" + '</div>').appendTo($('.mCSB_container')).addClass('new');
-        setDate();
-        updateScrollbar();
-        i++;
-    }, 1000 + (Math.random() * 20) * 100);
-
-}
