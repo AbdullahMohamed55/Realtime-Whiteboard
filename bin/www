@@ -156,7 +156,7 @@ function newConnection(socket) {
     socket.on('drawCircle',
         function(data) {
             // Data comes in as whatever was sent, including objects
-            console.log("Received data: " + data);
+            //console.log("Received data: " + data);
 
             // Send it to all other clients
             socket.to(socket.url).emit('drawCircle', data);
@@ -167,7 +167,7 @@ function newConnection(socket) {
     socket.on('changeBackground',
         function(data) {
             // Data comes in as whatever was sent, including objects
-            console.log("Received data: " + data);
+            //console.log("Received data: " + data);
 
             // Send it to all other clients
             socket.to(socket.url).emit('changeBackground', data);
@@ -177,7 +177,7 @@ function newConnection(socket) {
     socket.on('brush1',
         function(data) {
             // Data comes in as whatever was sent, including objects
-            console.log("Received data1: " + data);
+            //console.log("Received data1: " + data);
             // Send it to all other clients
             socket.to(socket.url).emit('brush1', data);
         }
@@ -186,7 +186,7 @@ function newConnection(socket) {
     socket.on('brush2',
         function(data) {
             // Data comes in as whatever was sent, including objects
-            console.log("Received data2: " + data);
+            //console.log("Received data2: " + data);
             // Send it to all other clients
             socket.to(socket.url).emit('brush2', data);
         }
@@ -195,7 +195,7 @@ function newConnection(socket) {
     socket.on('undo',
         function(data) {
             // Data comes in as whatever was sent, including objects
-            console.log("Received undo request: " + data);
+            //console.log("Received undo request: " + data);
             // Send it to all other clients
             socket.to(socket.url).emit('undo', data);
         }
