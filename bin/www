@@ -94,6 +94,8 @@ function newConnection(socket) {
             roomArr[data.url] += 1;
             //supply new user with room history
             io.to(socket.id).emit('updateNewJoiner',roomHist[data.url]);
+            console.log(drawHist[data.url]);
+
             io.to(socket.id).emit('updateNewJoinerDraw',drawHist[data.url]);
             io.to(socket.id).emit('updateNewJoinerDrawBckgnd',bckgnd[data.url]);
 
@@ -178,7 +180,7 @@ function newConnection(socket) {
             // Data comes in as whatever was sent, including objects
             //console.log("Received data: " + data);
 
-            bckgnd[socket.url] = data
+            bckgnd[socket.url] = data;
             // Send it to all other clients
             socket.to(socket.url).emit('changeBackground', data);
         }
@@ -189,6 +191,7 @@ function newConnection(socket) {
             // Data comes in as whatever was sent, including objects
             //console.log("Received data1: " + data);
             // Send it to all other clients
+            //drawHist[socket.url].push(data);
             socket.to(socket.url).emit('brush1', data);
         }
     );
@@ -220,7 +223,11 @@ function newConnection(socket) {
 
     socket.on('mouse_up',
         function(data) {
-            socket.to(socket.url).emit('mouse_up', data);
+            //console.log("Server Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + " " +data[0][0].pnt);
+
+            drawHist[socket.url].push(data);
+            // console.log(drawHist[socket.url][0]);
+            socket.to(socket.url).emit('mouse_up');
         }
     );
 
@@ -235,6 +242,7 @@ function newConnection(socket) {
             if(--roomArr[socket.url] == 0){
                 delete roomArr[socket.url];
                 delete roomHist[socket.url];
+                delete drawHist[socket.url];
             }
             console.log("Rooms left : " , roomArr);
 

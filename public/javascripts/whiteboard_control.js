@@ -45,7 +45,7 @@ window.onload = function () {
 
 
 //==============================my initialization for brush
-    var Dcolor = "";
+    var Dcolor = "black";
     var Dsize = 2;
     var paths2Holder = new Array(); //holds my paths
     var paths3Holder = new Array(); //holds my received paths
@@ -154,6 +154,30 @@ socket.on('updateNewJoinerDrawBckgnd',
         Mycanvas.style.backgroundImage = "  url('../images/whiteboard/" + bckgnd + " ') ";
     
 });
+//draw history
+socket.on('updateNewJoinerDraw', function(data){
+
+    console.log("Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + data[0][0].pnt);
+    console.log(data);
+
+
+    for(var k = 0;k<data.length;k++){
+        for(var i = 0;i<data[k].length;i++){
+
+            var histPath = new Path();
+            histPath.strokeColor = data[k][i][0].Dcolor;
+            histPath.strokeWidth = data[k][i][0].Dsize;
+
+                for(var j = 0;j<data[k][i].length;j++) {
+
+                    histPath.add(new Point(data[k][i][j].pnt[1], data[k][i][j].pnt[2]));
+
+                }
+            }
+        }
+
+
+    });
 
 //=======================receiving any sent data from server
 socket.on('brush1',
@@ -192,13 +216,14 @@ socket.on('brush2',
 
         paths2Holder.push(path2);
         savePaths.push(pathPoints);
+        console.log(savePaths);
 
-        socket.emit('mouse_up', "UP");
+        socket.emit('mouse_up', savePaths);
     };
 
     socket.on('mouse_up',
         // When we receive data
-        function (data) {
+        function () {
             paths3Holder.push(path3);
         }
     );
@@ -217,7 +242,7 @@ socket.on('brush2',
         //
         //         var newPath = new Path();
         //         newPath.strokeColor = savePaths[i][0].Dcolor;
-        //         newPath.strokeWidth = savePaths[i][0].Dsize;
+        //         newPath.strokeWidth = savePaths[i][1].Dsize;
         //
         //         for(var j = 0;j<savePaths[i].length;j++) {
         //
