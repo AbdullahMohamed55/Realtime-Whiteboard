@@ -227,7 +227,7 @@ function newConnection(socket) {
 
     socket.on('clear',
         function(data) {
-
+            drawHist[socket.url] =[];
             socket.to(socket.url).emit('clear', data);
         }
     );

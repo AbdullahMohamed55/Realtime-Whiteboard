@@ -318,10 +318,13 @@ socket.on('brush2',
                         paths2Holder[paths2Holder.length - 1].remove();
                         paths2Holder.pop();
                     }
-                    var iter;
-                    for(iter in paths3Holder){
-                        paths3Holder[iter].remove();
-                        paths3Holder[iter].pop();
+                    //var x;
+                    for(x in paths3Holder){
+                        console.log(x);
+                        while(paths3Holder[x].length > 0) {
+                            paths3Holder[x][paths3Holder[x].length - 1].remove();
+                            paths3Holder[x].pop();
+                        }
                     }
                     // while(paths3Holder.length > 0) {
                     //     paths3Holder[paths3Holder.length - 1].remove();
@@ -348,10 +351,14 @@ socket.on('brush2',
                 paths2Holder[paths2Holder.length - 1].remove();
                 paths2Holder.pop();
             }
-            while(paths3Holder.length > 0) {
-                paths3Holder[paths3Holder.length - 1].remove();
-                paths3Holder.pop();
+            //var x;
+            for(x in paths3Holder){
+                while(paths3Holder[x].length > 0) {
+                    paths3Holder[x][paths3Holder[x].length - 1].remove();
+                    paths3Holder[x].pop();
+                }
             }
+
 
         }
     );
