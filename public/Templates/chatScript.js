@@ -3,6 +3,7 @@ var typing =false;
 var toggle = true;
 var TYPING_TIMER_LENGTH = 400; // ms
 var socket = io.connect();
+var nousers =1;
 var username;
 var unseenmsg = 0;
 var $messages = $('.messages-content'),
@@ -177,7 +178,8 @@ function setUsername () {
          $currentInput = $inputMessage.focus();
          */
         clientData.username = username;
-        $('<div>' +  username  + '</div>').appendTo($('.chat-title')).addClass('new');
+        $('<div style="text-decoration: none">' +  username  + '</div>').appendTo($('.chat-title')).addClass('new');
+        $('<div class="timestamp" id="numusers" style="margin: 0px">online users :' +  nousers  + '</div>').appendTo($('.chat-title')).addClass('new');
         $('#myColor').css('background-color', getUsernameColor(clientData.username));
         // Tell the server your username
         //ON CONNECT
@@ -197,15 +199,16 @@ socket.on('updateNewJoiner',function(pastData){
         console.log(pastData[i]);
     }
 });
-
 // Whenever the server emits 'login', log the login message
 socket.on('login', function (data) {
     //connected = true;
     // Display the welcome message
     console.log("URL "+data.url);
-    var message = "Welcome to " + clientData.roomname;//TODO USE TIME STAMP
+    //var message = "Welcome to " + clientData.roomname;//TODO USE TIME STAMP
     clientData.url = data.url;
-    log(message);
+    nousers = data.numUsers;
+    $('#numusers').text('online users :'+nousers);
+    //log(message);
 
     //addParticipantsNumbers(numUsers);
 });

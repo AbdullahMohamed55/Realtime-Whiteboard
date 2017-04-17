@@ -53,7 +53,6 @@ function newConnection(socket) {
         if (addedUser) return;
         console.log("url coming");
         console.log(data.url);
-
         // search for roomurl if it exist
         var found = false;
         for(var val in roomUrl){
