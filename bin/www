@@ -94,12 +94,14 @@ function newConnection(socket) {
             //supply new user with room history
             io.to(socket.id).emit('updateNewJoiner',roomHist[data.url]);
             console.log(drawHist[data.url]);
-            if(drawHist[data.url]){
+            if(drawHist[data.url] != []){
                 io.to(socket.id).emit('updateNewJoinerDraw',drawHist[data.url]);
             }
-            io.to(socket.id).emit('updateNewJoinerDrawBckgnd',bckgnd[data.url]);
+            if(bckgnd[data.url] != []) {
 
+                io.to(socket.id).emit('updateNewJoinerDrawBckgnd', bckgnd[data.url]);
 
+            }
         }
         else{
             //init this room history

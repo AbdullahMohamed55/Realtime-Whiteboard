@@ -156,7 +156,7 @@ socket.on('updateNewJoinerDrawBckgnd',
 });
 //draw history
 socket.on('updateNewJoinerDraw', function(data){
-if(typeof data != 'undefined' ) {
+//if(typeof data != 'undefined' ) {
     console.log("Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + data[0][0].pnt);
     console.log(data);
 
@@ -177,7 +177,7 @@ if(typeof data != 'undefined' ) {
     }
 
 
-}
+//}
 });
 
 //=======================receiving any sent data from server
