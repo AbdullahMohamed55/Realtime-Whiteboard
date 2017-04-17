@@ -48,7 +48,7 @@ window.onload = function () {
     var Dcolor = "black";
     var Dsize = 2;
     var paths2Holder = new Array(); //holds my paths
-    var paths3Holder = new Array(); //holds my received paths
+    var paths3Holder = []; //holds my received paths
     // var Clearpath = new Array();
     var pathPoints; //holds every path`s data
     var savePaths = new  Array(); //container of all path points
@@ -156,28 +156,29 @@ socket.on('updateNewJoinerDrawBckgnd',
 });
 //draw history
 socket.on('updateNewJoinerDraw', function(data){
-
+if(typeof data != 'undefined' ) {
     console.log("Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + data[0][0].pnt);
     console.log(data);
 
 
-    for(var k = 0;k<data.length;k++){
-        for(var i = 0;i<data[k].length;i++){
+    for (var k = 0; k < data.length; k++) {
+        for (var i = 0; i < data[k].length; i++) {
 
             var histPath = new Path();
             histPath.strokeColor = data[k][i][0].Dcolor;
             histPath.strokeWidth = data[k][i][0].Dsize;
 
-                for(var j = 0;j<data[k][i].length;j++) {
+            for (var j = 0; j < data[k][i].length; j++) {
 
-                    histPath.add(new Point(data[k][i][j].pnt[1], data[k][i][j].pnt[2]));
+                histPath.add(new Point(data[k][i][j].pnt[1], data[k][i][j].pnt[2]));
 
-                }
             }
         }
+    }
 
 
-    });
+}
+});
 
 //=======================receiving any sent data from server
 socket.on('brush1',
@@ -192,7 +193,7 @@ socket.on('brush1',
         path3.add(new Point(data.pnt[1], data.pnt[2]));
 
         view.draw();
-        console.log("brush1 Path: " + path3.id);
+        //console.log("brush1 Path: " + path3.id);
 
     }
 );
@@ -223,8 +224,16 @@ socket.on('brush2',
 
     socket.on('mouse_up',
         // When we receive data
-        function () {
-            paths3Holder.push(path3);
+        function (data) {
+            if(typeof paths3Holder[data] == 'undefined'){
+                paths3Holder[data] = [];
+            }
+            paths3Holder[data].push(path3);
+            console.log(data);
+            console.log(paths3Holder);
+            console.log(paths3Holder[data]);
+            console.log(path3);
+
         }
     );
 
@@ -257,11 +266,12 @@ socket.on('brush2',
         //     console.log("Entered clear");
         //
         // }
+
         if (paths2Holder.length >0){
             paths2Holder[paths2Holder.length - 1].remove();
             paths2Holder.pop();
         }
-        socket.emit('undo', "undo");
+        socket.emit('undo');
     });
 
     socket.on('undo',
@@ -269,14 +279,16 @@ socket.on('brush2',
         function (data) {
 
             console.log("Undo Request: " + data);
+            console.log("conta Request: " + paths3Holder[data]);
+            console.log(paths3Holder);
 
-            if (paths3Holder.length >0){
-                paths3Holder[paths3Holder.length - 1].remove();
-                paths3Holder.pop();
+            if (paths3Holder[data].length > 0){
+                paths3Holder[data][paths3Holder[data].length - 1].remove();
+                paths3Holder[data].pop();
 
             }
             // view.draw();
-            console.log("Path to be deleted: " + path3.id);
+            //console.log("Path to be deleted: " + path3.id);
         }
     );
 
@@ -306,10 +318,15 @@ socket.on('brush2',
                         paths2Holder[paths2Holder.length - 1].remove();
                         paths2Holder.pop();
                     }
-                    while(paths3Holder.length > 0) {
-                        paths3Holder[paths3Holder.length - 1].remove();
-                        paths3Holder.pop();
+                    var iter;
+                    for(iter in paths3Holder){
+                        paths3Holder[iter].remove();
+                        paths3Holder[iter].pop();
                     }
+                    // while(paths3Holder.length > 0) {
+                    //     paths3Holder[paths3Holder.length - 1].remove();
+                    //     paths3Holder.pop();
+                    // }
 
                     socket.emit('clear',"clear");
 
