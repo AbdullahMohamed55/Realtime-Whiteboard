@@ -1,4 +1,3 @@
-// --------------------- testing code ------------------------
 var typing =false;
 var toggle = true;
 var TYPING_TIMER_LENGTH = 400; // ms
@@ -15,8 +14,9 @@ var clientData = {
 };
 var COLORS = [
     '#e21400', '#91580f', '#f8a700', '#f78b00',
-    '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
-    '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
+    '#58dc00', '#287b00',
+    '#3b88eb', '#3824aa',
+    '#FF33D4','#9633FF','#F9FF33','#17202A'
 ];
 socket.on('connect', function() {
     console.log("I am connected to server");
@@ -99,11 +99,11 @@ function cleanInput (input) {
 }
 
 // Gets the color of a username through our hash function
-function getUsernameColor (username) {
+function getUsernameColor (id) {
     // Compute hash code
     var hash = 7;
-    for (var i = 0; i < username.length; i++) {
-        hash = username.charCodeAt(i) + (hash << 5) - hash;
+    for (var i = 0; i < id.length; i++) {
+        hash = id.charCodeAt(i) + (hash << 5) - hash;
     }
     // Calculate color
     var index = Math.abs(hash % COLORS.length);
@@ -180,7 +180,7 @@ function setUsername () {
         clientData.username = username;
         $('<div style="text-decoration: none">' +  username  + '</div>').appendTo($('.chat-title')).addClass('new');
         $('<div class="timestamp" id="numusers" style="margin: 0px">online users :' +  nousers  + '</div>').appendTo($('.chat-title')).addClass('new');
-        $('#myColor').css('background-color', getUsernameColor(clientData.username));
+        $('#myColor').css('background-color', getUsernameColor(socket.id));
         // Tell the server your username
         //ON CONNECT
         /*
@@ -247,43 +247,7 @@ socket.on('typing', function (data) {
 socket.on('stop typing', function (data) {
     removeChatTyping();
 });
-/*
- // Adds the visual chat typing message
- function addChatTyping (data) {
- data.typing = true;
- data.message = 'is typing';
- addChatMessage(data);
- }
 
- // Removes the visual chat typing message
- function removeChatTyping (data) {
- getTypingMessages(data).fadeOut(function () {
- $(this).remove();
- });
- }
- // Gets the 'X is typing' messages of a user
- function getTypingMessages (data) {
- return $('.typing.message').filter(function (i) {
- return $(this).data('username') === data.username;
- });
- }
-
- */
-//END TODO
-// Gets the color of a username through our hash function
-/*
- //TODO Bonus
- function getUsernameColor (username) {
- // Compute hash code
- var hash = 7;
- for (var i = 0; i < username.length; i++) {
- hash = username.charCodeAt(i) + (hash << 5) - hash;
- }
- // Calculate color
- var index = Math.abs(hash % COLORS.length);
- return COLORS[index];
- }
- */
 socket.on('disconnect', function () {
     log('you have been disconnected');
 });
@@ -300,17 +264,6 @@ socket.on('reconnect_error', function () {
     log('attempt to reconnect has failed');
 });
 
-////////////////////////////
-/*
- function setUser() {
-
- if ($("#userInput").val() != "")
- {
- socket.emit('setUser', $("#userInput").val());
- username = $("#userInput").val()
- }
- }*/
-////////////////////
 function updateScrollbar() {
     $messages.mCustomScrollbar("update").mCustomScrollbar('scrollTo', 'bottom', {
         scrollInertia: 10,
@@ -351,8 +304,7 @@ function insertMessage(user,msg,id) {
             $('#countermsg').text(unseenmsg);
             $('#countermsg').css("display",'inline');
         }
-        var color_user = getUsernameColor(user);
-        $('<div class="message new"><figure class="avatar" style="background-color:'+getUsernameColor(user)+'"></figure>'
+        $('<div class="message new"><figure class="avatar" style="background-color:'+getUsernameColor(id)+'"></figure>'
             + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
         $('.message:last').append('<div class="userstamp">'+user+'</div>')
     }
@@ -363,7 +315,6 @@ function insertMessage(user,msg,id) {
 }
 
 
-
 $(window).on('keydown', function(e) {
     if (e.which == 13) {
         sentMessage();
@@ -372,8 +323,8 @@ $(window).on('keydown', function(e) {
 })
 
 function addChatTyping (user) {
-    $('<div class="message loading"><figure class="avatar" style="background-color:'+getUsernameColor(user)+'"></figure></div>').appendTo($('.mCSB_container')).addClass('new');
-    $('.message:last').append('<div>'+user+' is typing...'+'</div>');
+    $('<div class="message loading"><figure class="avatar" style="background-color:grey"></figure></div>').appendTo($('.mCSB_container')).addClass('new');
+    $('.message:last').append('<div>someone is typing...'+'</div>');
     updateScrollbar();
 }
 function removeChatTyping () {
