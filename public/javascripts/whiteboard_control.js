@@ -156,28 +156,58 @@ socket.on('updateNewJoinerDrawBckgnd',
 });
 //draw history
 socket.on('updateNewJoinerDraw', function(data){
-//if(typeof data != 'undefined' ) {
-    console.log("Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + data[0][0].pnt);
-    console.log(data);
+
+    console.log("Updtae data: " + data);
 
 
-    for (var k = 0; k < data.length; k++) {
-        for (var i = 0; i < data[k].length; i++) {
+    //do I need a container here to look if drawHist is emtpy I will clear it ?!!
+if(typeof data != 'undefined' || data != null ) {
+    // console.log("Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + data[0][0].pnt);
 
-            var histPath = new Path();
-            histPath.strokeColor = data[k][i][0].Dcolor;
-            histPath.strokeWidth = data[k][i][0].Dsize;
+    //data -> key[room]=>value[ path1 | path2 | .... ]
+    // for (var k = 0; k < data.length; k++) {
+    //     for (var i = 0; i < data[k].length; i++) {
+    //
+    //         var histPath = new Path();
+    //         histPath.strokeColor = data[k][i][0].Dcolor;
+    //         histPath.strokeWidth = data[k][i][0].Dsize;
+    //
+    //         for (var j = 0; j < data[k][i].length; j++) {
+    //
+    //             histPath.add(new Point(data[k][i][j].pnt[1], data[k][i][j].pnt[2]));
+    //
+    //         }
+    //     }
+    // }
 
-            for (var j = 0; j < data[k][i].length; j++) {
+    //edited
+    for (var i = 0; i < data.length; i++) {
 
-                histPath.add(new Point(data[k][i][j].pnt[1], data[k][i][j].pnt[2]));
+        var client = data[i][0];
+        var currentData = data[i][1];
 
-            }
+        console.log("client: " + client);
+        console.log("currentData: " +currentData);
+
+        var histPath = new Path();
+        histPath.strokeColor = currentData[0].Dcolor;
+        histPath.strokeWidth = currentData[0].Dsize;
+
+        for (var j = 0; j < currentData.length; j++) {
+
+            histPath.add(new Point(currentData[j].pnt[1], currentData[j].pnt[2]));
         }
+
+        if(!paths3Holder[client]) {
+            paths3Holder[client] = new Array();
+        }
+        paths3Holder[client].push(histPath);
+
     }
 
 
-//}
+
+}
 });
 
 //=======================receiving any sent data from server
@@ -216,10 +246,10 @@ socket.on('brush2',
     tool1.onMouseUp = function (event) {
 
         paths2Holder.push(path2);
-        savePaths.push(pathPoints);
-        console.log(savePaths);
+        // savePaths.push(pathPoints); //will form drawHist
+        console.log(pathPoints);
 
-        socket.emit('mouse_up', savePaths);
+        socket.emit('mouse_up', pathPoints); //modified
     };
 
     socket.on('mouse_up',
@@ -292,7 +322,7 @@ socket.on('brush2',
         }
     );
 
-//====================================Clear screen
+//==========================================================Clear screen
     var context = Mycanvas.getContext('2d');
     $("#clearScreen").click(function () {
 
