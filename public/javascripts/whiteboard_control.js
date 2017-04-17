@@ -47,8 +47,8 @@ window.onload = function () {
 //==============================my initialization for brush
     var Dcolor = "";
     var Dsize = 2;
-    var paths2 = new Array(); //holds my paths
-    var paths3 = new Array(); //holds my received paths
+    var paths2Holder = new Array(); //holds my paths
+    var paths3Holder = new Array(); //holds my received paths
     // var Clearpath = new Array();
     var pathPoints; //holds every path`s data
     var savePaths = new  Array(); //container of all path points
@@ -148,11 +148,49 @@ window.onload = function () {
 
         socket.emit('brush2', event.point);
     };
+//bckgnd
+socket.on('updateNewJoinerDrawBckgnd',
+    function(bckgnd){
+        Mycanvas.style.backgroundImage = "  url('../images/whiteboard/" + bckgnd + " ') ";
+    
+});
+
+//=======================receiving any sent data from server
+socket.on('brush1',
+    // When we receive data
+    function (data) {
+
+        console.log("Received1: " + data.pnt[1] + " " + data.pnt[2]);
+
+        path3 = new Path();
+        path3.strokeColor = data.Dcolor;
+        path3.strokeWidth = data.Dsize;
+        path3.add(new Point(data.pnt[1], data.pnt[2]));
+
+        view.draw();
+        console.log("brush1 Path: " + path3.id);
+
+    }
+);
+
+socket.on('brush2',
+    // When we receive data
+    function (data) {
+
+        console.log("Received2: " + data);
+
+        //This is too fuckin stupid shit of java
+        path3.add(new Point(data[1], data[2]));
+        view.draw();
+
+        console.log("brush2 Path: " + path3.id);
+    }
+);
 
 //=============================Saving My paths and Handling undo
     tool1.onMouseUp = function (event) {
 
-        paths2.push(path2);
+        paths2Holder.push(path2);
         savePaths.push(pathPoints);
 
         socket.emit('mouse_up', "UP");
@@ -161,34 +199,17 @@ window.onload = function () {
     socket.on('mouse_up',
         // When we receive data
         function (data) {
-            paths3.push(path3);
+            paths3Holder.push(path3);
         }
     );
 
-    socket.on('undo',
-        // When we receive data
-        function (data) {
-
-            console.log("Undo Request: " + data);
-
-            if (paths3.length >0){
-                paths3[paths3.length - 1].remove();
-                paths3.pop();
-
-            }
-            // view.draw();
-            console.log("Path to be deleted: " + path3.id);
-        }
-    );
-
-
+    //Only undo my work
     $("#undo").click(function () {
         // canvas.parentNode.removeChild(path2);
         // console.log("Entered undo");
-        // console.log("paths2 Size: " + paths2.length );
+        // console.log("paths2Holder Size: " + paths2Holder.length );
         // console.log("Clear size: " + Clearpath.length);
         // if (clearedScreen){
-        //
         //
         //     // console.log(savePaths);
         //
@@ -211,43 +232,85 @@ window.onload = function () {
         //     console.log("Entered clear");
         //
         // }
-        if (paths2.length >0){
-            paths2[paths2.length - 1].remove();
-            paths2.pop();
+        if (paths2Holder.length >0){
+            paths2Holder[paths2Holder.length - 1].remove();
+            paths2Holder.pop();
         }
         socket.emit('undo', "undo");
     });
 
-
-//=======================receiving any sent data from server
-    socket.on('brush1',
+    socket.on('undo',
         // When we receive data
         function (data) {
 
-            console.log("Received1: " + data.pnt[1] + " " + data.pnt[2]);
+            console.log("Undo Request: " + data);
 
-            path3 = new Path();
-            path3.strokeColor = data.Dcolor;
-            path3.strokeWidth = data.Dsize;
-            path3.add(new Point(data.pnt[1], data.pnt[2]));
+            if (paths3Holder.length >0){
+                paths3Holder[paths3Holder.length - 1].remove();
+                paths3Holder.pop();
 
-            view.draw();
-            console.log("brush1 Path: " + path3.id);
-
+            }
+            // view.draw();
+            console.log("Path to be deleted: " + path3.id);
         }
     );
 
-    socket.on('brush2',
-        // When we receive data
+//====================================Clear screen
+    var context = Mycanvas.getContext('2d');
+    $("#clearScreen").click(function () {
+
+        clearedScreen = true;
+
+        swal({
+                title: "Clear the entire screen?",
+                text: "Your drawings and others' too will be lost forever!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Clear it!",
+                cancelButtonText: "No, Keep drawings!",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            },
+            function(isConfirm){
+                if (isConfirm) {
+                    //clear logic
+                    context.clearRect(0, 0, Mycanvas.width, Mycanvas.height);
+
+                    while(paths2Holder.length > 0) {
+                        paths2Holder[paths2Holder.length - 1].remove();
+                        paths2Holder.pop();
+                    }
+                    while(paths3Holder.length > 0) {
+                        paths3Holder[paths3Holder.length - 1].remove();
+                        paths3Holder.pop();
+                    }
+
+                    socket.emit('clear',"clear");
+
+                }
+                // else {
+                //
+                // }
+            });
+
+        // print(context);
+        // console.log(context);
+    });
+
+    socket.on('clear',
         function (data) {
+            console.log("Received event: " + data);
 
-            console.log("Received2: " + data);
+            while(paths2Holder.length > 0) {
+                paths2Holder[paths2Holder.length - 1].remove();
+                paths2Holder.pop();
+            }
+            while(paths3Holder.length > 0) {
+                paths3Holder[paths3Holder.length - 1].remove();
+                paths3Holder.pop();
+            }
 
-            //This is too fuckin stupid shit of java
-            path3.add(new Point(data[1], data[2]));
-            view.draw();
-
-            console.log("brush2 Path: " + path3.id);
         }
     );
 
@@ -282,24 +345,6 @@ window.onload = function () {
     $(document).ready(function() {
         $('.flash').hide();
     });
-
-//====================================Clear screen
-    var context = Mycanvas.getContext('2d');
-    $("#clearScreen").click(function () {
-
-        context.clearRect(0, 0, Mycanvas.width, Mycanvas.height);
-
-        clearedScreen = true;
-        // Clearpath = paths2.slice();
-        // console.log(Clearpath.length)
-        // paths2 = [];
-        while(paths2.length > 0) {
-            paths2[paths2.length - 1].remove();
-            paths2.pop();        }
-        // print(context);
-        // console.log(context);
-    });
-
 
 //===============================================Handling Circles OR Brush
     $("#circle").click(function () {
