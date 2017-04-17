@@ -1,5 +1,5 @@
 var typing =false;
-var toggle = true;
+var toggle = false;
 var TYPING_TIMER_LENGTH = 400; // ms
 var socket = io.connect();
 var nousers =1;
