@@ -309,7 +309,7 @@ socket.on('brush2',
         function (data) {
 
             console.log("Undo Request: " + data);
-            console.log("conta Request: " + paths3Holder[data]);
+            console.log("container Request: " + paths3Holder[data]);
             console.log(paths3Holder);
 
             if (paths3Holder[data].length > 0){

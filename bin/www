@@ -212,15 +212,99 @@ function newConnection(socket) {
             // Data comes in as whatever was sent, including objects
             //console.log("Received undo request: " + data);
             // Send it to all other clients
-            console.log("drawHist" + drawHist);
+            if(typeof drawHist[socket.url] != 'undefined' || drawHist[socket.url] != null ) {
+
+                // console.log("drawHist client:" + drawHist[socket.url][0][0] + "|| Paths: " + drawHist[socket.url][0][1]);
+                // console.log("drawHist client:" + drawHist[socket.url][1][0] + "|| Paths: " + drawHist[socket.url][1][1]);
+                // console.log("1st path in 1st client: " + drawHist[socket.url][0]);
+                // console.log("2nd path in 1st client: " + drawHist[socket.url][1]); // I want to delete(pop) specificlly this from drawHist!!
+                // console.log("1st path in 2nd client: " + drawHist[socket.url][2]);
+
+                //Dolaaaaaaaaaaa3!
+                // console.log("clientID in drawing history: " + drawHist[socket.url][0][0]);
+                console.log("clientID in sever side: " + socket.id);
+
+                var detectedUser = false;
+                var myIdx = -1;
+                console.log("drawing history size: " + drawHist[socket.url].length);
+                for(var i=0; i<drawHist[socket.url].length; i++){
+
+                    console.log("loop #" + i);
+                    console.log("current userID in history: " + drawHist[socket.url][i][0]);
+
+                    if( drawHist[socket.url][i][0] == socket.id){
+                        detectedUser = true;
+                        console.log("User detected: " + detectedUser);
+                    }
+                    //toggeled user
+                    else {
+                        console.log("User toggeled: ");
+                        if(detectedUser == true){
+                            myIdx = i-1;
+                            break;
+                            console.log("My Index: " + myIdx);
+
+                        }
+                    }
+                    //no one else drew anything in drawingHist
+                    if(detectedUser == true && i == drawHist[socket.url].length-1 ){
+                        console.log("No else Users");
+                        myIdx = i;
+                        break;
+                        console.log("My Index: " + myIdx);
+                    }
+
+                        }
+
+                console.log("detected idx: " + myIdx);
+                console.log("DrawHisht Before undo: " + drawHist[socket.url]);
+
+                // drawHist[socket.url][myIdx].pop(); removing id
+                // drawHist[socket.url][myIdx].pop(); removing paths
+                if(myIdx != -1) {
+                    drawHist[socket.url].splice(myIdx, 1);
+                }
+
+                console.log("DrawHisht after undo: " + drawHist[socket.url]);
+
+
+            }
 
             //drawHist[socket.url];
-            var x;
-            for(x in drawHist[socket.url][socket.id]){
-                if(x == socket.id){
-                    drawHist[socket.url][socket.id].pop();
-                }
-            }
+
+            // for(x in drawHist[socket.url][socket.id]){
+            //     if(x == socket.id){
+            //         drawHist[socket.url][socket.id].pop();
+            //     }
+            // }
+
+
+
+            // for (var i = 0; i < data.length; i++) {
+            //
+            //     var client = data[i][0];
+            //     var currentData = data[i][1];
+            //
+            //     console.log("client: " + client);
+            //     console.log("currentData: " +currentData);
+            //
+            //     var histPath = new Path();
+            //     histPath.strokeColor = currentData[0].Dcolor;
+            //     histPath.strokeWidth = currentData[0].Dsize;
+            //
+            //     for (var j = 0; j < currentData.length; j++) {
+            //
+            //         histPath.add(new Point(currentData[j].pnt[1], currentData[j].pnt[2]));
+            //     }
+            //
+            //     if(!paths3Holder[client]) {
+            //         paths3Holder[client] = new Array();
+            //     }
+            //     paths3Holder[client].push(histPath);
+            //
+            // }
+
+
             socket.to(socket.url).emit('undo', socket.id);
         }
     );
