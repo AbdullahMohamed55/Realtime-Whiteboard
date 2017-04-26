@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <meta name="keywords" content="jquery, css3, sliding, box, menu, cube, navigation, portfolio, thumbnails"/>
+
+
+    <link rel="stylesheet" href="../stylesheets/user.css" type="text/css" media="screen"/>
+    <link rel="stylesheet prefetch"
+          href="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.3/jquery.mCustomScrollbar.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+
+
+
+</head>
+<body>
+<div class="form">
+
+    <ul class="tab-group">
+        <li class="tab active"><a href="#signup">Sign Up</a></li>
+        <li class="tab"><a href="#login">Log In</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="signup">
+            <h1>Sign Up for Free</h1>
+
+            <form action="users" method="get" id="upForm">
+
+                <!--<div class="top-row">-->
+                    <div class="field-wrap">
+                        <label>
+                            Username<span class="req">*</span>
+                        </label>
+                        <input type="text" id="uname" required autocomplete="off"/>
+                        <h6 style="color:RED;"id="v_Handle"></h6>
+                    </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Set A Password<span class="req">*</span>
+                    </label>
+                    <input type="password" id="pass1" required autocomplete="off"/>
+                </div>
+                <div class="field-wrap">
+                    <label>
+                        Confirm Password<span class="req">*</span>
+                    </label>
+                    <input type="password" id="pass1val"required autocomplete="off"/>
+                    <h6 style="color:RED;"id="v_Pass"></h6>
+
+                </div>
+
+                <button type="button" class="button button-block" id="register"/>
+                Get Started</button>
+
+            </form>
+
+        </div>
+
+        <div id="login">
+            <h1>Welcome Back!</h1>
+
+            <form action="/" method="get" id="inForm">
+
+                <div class="field-wrap">
+                    <h6 style="color:RED;"id="v_Handle2"></h6>
+                    <label>
+                        Username<span class="req">*</span>
+                    </label>
+                    <input type="text" id="uname2" required autocomplete="off"/>
+                </div>
+
+                <div class="field-wrap">
+                    <label>
+                        Password<span class="req">*</span>
+                    </label>
+                    <input type="password" id="pass2" required autocomplete="off"/>
+                </div>
+
+                <!--<p class="forgot"><a href="#">Forgot Password?</a></p>-->
+
+                <button type="button" class="button button-block" id="signin"/>
+                Log In</button>
+
+            </form>
+
+        </div>
+
+    </div><!-- tab-content -->
+
+</div> <!-- /form -->
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="../javascripts/userForm.js"></script>
+
+</body>
+</html>

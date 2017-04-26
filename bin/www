@@ -6,6 +6,7 @@
 var app = require('../app');
 var debug = require('debug')('dum:server');
 var http = require('http');
+var mysql = require('mysql');
 
 /**
  * Get port from environment and store in Express.
@@ -13,6 +14,7 @@ var http = require('http');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
+
 
 /**
  * Create HTTP server.
@@ -23,6 +25,7 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
+
 
 server.listen(port);
 server.on('error', onError);
@@ -45,9 +48,16 @@ io.sockets.on("connection", newConnection);
 
 function newConnection(socket) {
 
+
+
     var addedUser = false;
     console.log("connected");
-    io.clients(function(error, clients){
+
+    if (app.locals.authUser)
+        console.log("Expected user: " + app.locals.authUser);
+
+
+    io.clients(function (error, clients) {
         if (error) throw error;
         console.log(clients);
     });
@@ -58,12 +68,12 @@ function newConnection(socket) {
         console.log(data.url);
         // search for roomurl if it exist
         var found = false;
-        for(var val in roomUrl){
-            if (roomUrl[val] == data.url){
+        for (var val in roomUrl) {
+            if (roomUrl[val] == data.url) {
                 found = true;
             }
         }
-        if(!found){
+        if (!found) {
             var uuid = require('node-uuid');
             console.log("URL NOT FOUND");
             // Generate a v1 (time-based) id
@@ -75,7 +85,7 @@ function newConnection(socket) {
             var url = randomID;  // or + timeBasedID
 
             //insert url and roomname
-            data.url =url;
+            data.url = url;
             roomUrl[data.roomname] = url;
         }
 
@@ -89,21 +99,21 @@ function newConnection(socket) {
         socket.roomname = data.roomname;
         socket.url = data.url;
         //user joins an existing room
-        if(data.url in roomArr){
+        if (data.url in roomArr) {
             roomArr[data.url] += 1;
             //supply new user with room history
-            io.to(socket.id).emit('updateNewJoiner',roomHist[data.url]);
+            io.to(socket.id).emit('updateNewJoiner', roomHist[data.url]);
             console.log(drawHist[data.url]);
             // if(drawHist[data.url] != []){
-                io.to(socket.id).emit('updateNewJoinerDraw',drawHist[data.url]);
+            io.to(socket.id).emit('updateNewJoinerDraw', drawHist[data.url]);
             // }
-            if(bckgnd[data.url] != []) {
+            if (bckgnd[data.url] != []) {
 
                 io.to(socket.id).emit('updateNewJoinerDrawBckgnd', bckgnd[data.url]);
 
             }
         }
-        else{
+        else {
             //init this room history
             roomHist[data.url] = [];
             drawHist[data.url] = [];
@@ -122,16 +132,15 @@ function newConnection(socket) {
         addedUser = true;
 
 
-
         // sending to all clients in room except sender
         socket.to(data.url).emit('user joined', {
             username: socket.username,
             numUsers: roomArr[socket.url]
         });
-        console.log("URL bfore log"+data.url);
+        console.log("URL bfore log" + data.url);
         io.in(data.url).emit('login', {
             numUsers: roomArr[socket.url],
-            url : data.url
+            url: data.url
 
         });
 
@@ -140,12 +149,12 @@ function newConnection(socket) {
     // when the client emits 'new message', this listens and executes
     socket.on('new message', function (data) {
         // we tell the client to execute 'new message'
-        roomHist[socket.url].push({username: socket.username,message: data,id:socket.id});
+        roomHist[socket.url].push({username: socket.username, message: data, id: socket.id});
         //TODO make it socket.to
         io.in(socket.url).emit('new message', {
             username: socket.username,
             message: data,
-            id : socket.id
+            id: socket.id
         });
     });
 
@@ -167,7 +176,7 @@ function newConnection(socket) {
 
     //DRAWING STUFF
     socket.on('drawCircle',
-        function(data) {
+        function (data) {
             // Data comes in as whatever was sent, including objects
             //console.log("Received data: " + data);
 
@@ -178,7 +187,7 @@ function newConnection(socket) {
 
 
     socket.on('changeBackground',
-        function(data) {
+        function (data) {
             // Data comes in as whatever was sent, including objects
             //console.log("Received data: " + data);
 
@@ -189,7 +198,7 @@ function newConnection(socket) {
     );
 
     socket.on('brush1',
-        function(data) {
+        function (data) {
             // Data comes in as whatever was sent, including objects
             //console.log("Received data1: " + data);
             // Send it to all other clients
@@ -199,7 +208,7 @@ function newConnection(socket) {
     );
 
     socket.on('brush2',
-        function(data) {
+        function (data) {
             // Data comes in as whatever was sent, including objects
             //console.log("Received data2: " + data);
             // Send it to all other clients
@@ -208,11 +217,11 @@ function newConnection(socket) {
     );
 
     socket.on('undo',
-        function() {
+        function () {
             // Data comes in as whatever was sent, including objects
             //console.log("Received undo request: " + data);
             // Send it to all other clients
-            if(typeof drawHist[socket.url] != 'undefined' || drawHist[socket.url] != null ) {
+            if (typeof drawHist[socket.url] != 'undefined' || drawHist[socket.url] != null) {
 
                 // console.log("drawHist client:" + drawHist[socket.url][0][0] + "|| Paths: " + drawHist[socket.url][0][1]);
                 // console.log("drawHist client:" + drawHist[socket.url][1][0] + "|| Paths: " + drawHist[socket.url][1][1]);
@@ -227,41 +236,41 @@ function newConnection(socket) {
                 var detectedUser = false;
                 var myIdx = -1;
                 console.log("drawing history size: " + drawHist[socket.url].length);
-                for(var i=0; i<drawHist[socket.url].length; i++){
+                for (var i = 0; i < drawHist[socket.url].length; i++) {
 
                     console.log("loop #" + i);
                     console.log("current userID in history: " + drawHist[socket.url][i][0]);
 
-                    if( drawHist[socket.url][i][0] == socket.id){
+                    if (drawHist[socket.url][i][0] == socket.id) {
                         detectedUser = true;
                         console.log("User detected: " + detectedUser);
                     }
                     //toggeled user
                     else {
                         console.log("User toggeled: ");
-                        if(detectedUser == true){
-                            myIdx = i-1;
+                        if (detectedUser == true) {
+                            myIdx = i - 1;
                             break;
                             console.log("My Index: " + myIdx);
 
                         }
                     }
                     //no one else drew anything in drawingHist
-                    if(detectedUser == true && i == drawHist[socket.url].length-1 ){
+                    if (detectedUser == true && i == drawHist[socket.url].length - 1) {
                         console.log("No else Users");
                         myIdx = i;
                         break;
                         console.log("My Index: " + myIdx);
                     }
 
-                        }
+                }
 
                 console.log("detected idx: " + myIdx);
                 console.log("DrawHisht Before undo: " + drawHist[socket.url]);
 
                 // drawHist[socket.url][myIdx].pop(); removing id
                 // drawHist[socket.url][myIdx].pop(); removing paths
-                if(myIdx != -1) {
+                if (myIdx != -1) {
                     drawHist[socket.url].splice(myIdx, 1);
                 }
 
@@ -277,7 +286,6 @@ function newConnection(socket) {
             //         drawHist[socket.url][socket.id].pop();
             //     }
             // }
-
 
 
             // for (var i = 0; i < data.length; i++) {
@@ -310,22 +318,132 @@ function newConnection(socket) {
     );
 
     socket.on('clear',
-        function(data) {
-            drawHist[socket.url] =[];
+        function (data) {
+            drawHist[socket.url] = [];
             socket.to(socket.url).emit('clear', data);
         }
     );
 
+    //connect to database
+    // var connection = mysql.createConnection({
+    //
+    //     host: 'us-cdbr-iron-east-03.cleardb.net',
+    //     user: 'bbf17e20c980d8',
+    //     password: 'b6abe9ee',
+    //     database: 'heroku_96c18a2afd659e5'
+    // });
+    //
+    //
+    // connection.connect(function (error) {
+    //
+    //         if (!!error)
+    //             console.log("Errroroororo");
+    //         else
+    //             console.log("connected to database");
+    //
+    //     }
+    // );
+    //
+    // socket.on('signup',
+    //     function (data) {
+    //
+    //         var status = "";
+    //
+    //         var query = connection.query('SELECT * FROM  users WHERE username = ' + connection.escape(data.username), function (err, result) {
+    //
+    //              if(result.length != 0) {
+    //                 console.log("This username is already taken :/");
+    //                 console.log(result);
+    //                 status = "failed";
+    //             }
+    //             else{
+    //                  status = "success";
+    //                  console.log("success1");
+    //                  console.log(status);
+    //
+    //              }
+    //         });
+    //
+    //         if (data.password != data.passValidation) {
+    //             status = "failed";
+    //             console.log("success555555");
+    //
+    //         }
+    //
+    //
+    //
+    //         if(status == "success"){
+    //
+    //             console.log("success2");
+    //
+    //             var user = {
+    //                 username: data.username,
+    //                 password: data.password
+    //             };
+    //             var query2 = connection.query('insert into users set ?', user, function (err, result) {
+    //                 if (err) {
+    //                     console.log("something went wrong");
+    //                     status = "failed";
+    //                 }
+    //                 else{
+    //                     status = "success";
+    //                     console.log("success3");
+    //
+    //                 }
+    //
+    //                 });
+    //         }
+    //
+    //         console.log("success4");
+    //
+    //
+    //         socket.emit('signup', status);
+    //     }
+    // );
+    //
+    // socket.on('signin',
+    //     function (data) {
+    //
+    //         var status = "";
+    //
+    //         var query = connection.query('SELECT * FROM  users WHERE username = ' + connection.escape(data.username), function (err, result) {
+    //
+    //             if(result.length != 0) {
+    //                 if(result.username == data.username && result.password == data.password) {
+    //                     status = "success";
+    //                     sessionStorage['userID'] = result.id;
+    //                     console.log("Logged in");
+    //                 }
+    //                 else {
+    //                     console.log("wrong username/password");
+    //                     status = "failed";
+    //
+    //                 }
+    //
+    //             }
+    //             else{
+    //                 console.log("No user found");
+    //                 status = "failed";
+    //             }
+    //         });
+    //
+    //         //if fetched right from database
+    //         socket.emit('signin', status);
+    //
+    //     }
+    // );
+
     socket.on('mouse_up',
-        function(data) {
+        function (data) {
             //console.log("Server Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + " " +data[0][0].pnt);
             // if(!drawHist[socket.url]){
             //     drawHist[socket.url] = [];
             // }
             //drawHist[socket.url].push(socket.id);
 
-            if(!drawHist[socket.url])
-            {drawHist[socket.url] = new Array();}
+            if (!drawHist[socket.url]) {
+                drawHist[socket.url] = new Array();
+            }
 
             // if(!drawHist[socket.url][socket.id])
             // {drawHist[socket.url][socket.id] = new Array();}
@@ -333,29 +451,29 @@ function newConnection(socket) {
             // drawHist[socket.url][socket.id].push(data);
             drawHist[socket.url].push([socket.id, data]);
             console.log("Drawing History: " + drawHist[socket.url]);
-            socket.to(socket.url).emit('mouse_up',socket.id);
+            socket.to(socket.url).emit('mouse_up', socket.id);
         }
     );
 
     // when the user disconnects.. perform this
     socket.on('disconnect', function () {
         console.log("disconnected");
-        io.clients(function(error, clients){
+        io.clients(function (error, clients) {
             if (error) throw error;
             console.log("MEx: ", clients); // => [6em3d4TJP8Et9EMNAAAA, G5p55dHhGgUnLUctAAAB]
         });
 
         if (addedUser) {
 
-            if(--roomArr[socket.url] == 0){
+            if (--roomArr[socket.url] == 0) {
                 delete roomArr[socket.url];
                 delete roomHist[socket.url];
                 delete drawHist[socket.url];
             }
-            console.log("Rooms left : " , roomArr);
+            console.log("Rooms left : ", roomArr);
             io.in(socket.url).emit('login', {
                 numUsers: roomArr[socket.url],
-                url : socket.url
+                url: socket.url
 
             });
             console.log(socket.username, " has left room ", socket.url);
