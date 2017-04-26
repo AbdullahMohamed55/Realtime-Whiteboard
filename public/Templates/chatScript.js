@@ -87,17 +87,9 @@ socket.on('stop typing', function (data) {
     userTyping = false;
 });
 
-function sentMessage() {
-    selector = $('#messageInput')
-    if (selector.val() != "")
-    {
 
-        socket.emit('new message',selector.val(),username);
-        //insertMessage(selector.val(),"Me");
-        selector.val('');
-    }
-}
 
+// minmizing chat box by making decreasing its height
 $('#minmizeChat').click(function () {
     if(toggle){
         $('.chat').css("height","7vh");
@@ -115,6 +107,7 @@ $('#minmizeChat').click(function () {
     }
 });
 
+// welcoming the user and ask them to enter a username and enter a room
 $(window).load(function() {
     swal({
             title: "Welcome to DrawIt",
@@ -167,6 +160,7 @@ function cleanInput (input) {
     return $('<div/>').text(input).text();
 }
 
+//hashing every user's color
 function getUsernameColor (id) {
     // Compute hash code
     var hash = 7;
@@ -178,6 +172,7 @@ function getUsernameColor (id) {
     return COLORS[index];
 }
 
+// adding someone to a new room or an existing one by entering a token of it.
 function addtoroom(){
 
     if(username){
@@ -239,6 +234,19 @@ function addtoroom(){
     }
 }
 
+// sending a message to server
+function sentMessage() {
+    selector = $('#messageInput')
+    if (selector.val() != "")
+    {
+
+        socket.emit('new message',selector.val(),username);
+        //insertMessage(selector.val(),"Me");
+        selector.val('');
+    }
+}
+
+// update username and the users number in the room
 function setUsername () {
 
     // If the username is valid
@@ -253,12 +261,7 @@ function setUsername () {
     }
 }
 
-
-
-function addParticipantsNumbers(numUsers){
-    //TODO SHOW num of ONLINE USERS
-}
-
+// notification message when a new user enters the room
 function log (message) {
     $('<div class="timestamp">' +  message  + '</div>').appendTo($('.mCSB_container')).addClass('new');
     //$("#messageContent").append('<div class="timestamp">' +  message  + '</div>');
@@ -266,7 +269,7 @@ function log (message) {
 }
 
 
-
+// update the scroll in chat box
 function updateScrollbar() {
     $messages.mCustomScrollbar("update").mCustomScrollbar('scrollTo', 'bottom', {
         scrollInertia: 10,
@@ -278,6 +281,8 @@ $('#messageInput').on( 'input',function() {
     updateTyping();
 });
 
+
+//add time to message when two message not in the same minute
 function setDate(){
     d = new Date()
     if (d.getMinutes()!=m) {
@@ -289,6 +294,7 @@ function setDate(){
     updateScrollbar();
 }
 
+// insert the message in the chat box
 function insertMessage(user,msg,id) {
     setDate();
     //security concerns
@@ -302,6 +308,7 @@ function insertMessage(user,msg,id) {
 
     }
     else{
+        // if message is not seen yet
         if(!toggle){
             unseenmsg+=1;
             $('#countermsg').text(unseenmsg);
@@ -325,18 +332,19 @@ $(window).on('keydown', function(e) {
     }
 })
 
+// add someone is typing in chatbox
 function addChatTyping (user) {
     $('<div class="message loading"><figure class="avatar" style="background-color:grey"></figure></div>').appendTo($('.mCSB_container')).addClass('new');
     $('.message:last').append('<div>someone is typing...'+'</div>');
     updateScrollbar();
 }
 
-
+// remove someone is typing from html
 function removeChatTyping () {
     $('.message.loading').remove();
 }
 
-
+// update typing interval and emit it to the server
 function updateTyping () {
 
     if (!typing) {
