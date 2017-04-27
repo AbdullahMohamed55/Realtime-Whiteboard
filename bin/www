@@ -68,8 +68,8 @@ function newConnection(socket) {
         console.log(data.url);
         // search for roomurl if it exist
         var found = false;
-        for (var val in roomUrl) {
-            if (roomUrl[val] == data.url) {
+        for(var val in roomArr){
+            if (val == data.url){
                 found = true;
             }
         }
@@ -123,7 +123,6 @@ function newConnection(socket) {
             roomArr[data.url] = 1;
 
         }
-        console.log(roomUrl);
 
         //console.log(roomArr[data.roomname]);
 
@@ -139,7 +138,8 @@ function newConnection(socket) {
             username: socket.username,
             numUsers: roomArr[socket.url]
         });
-        console.log("URL bfore log" + data.url);
+
+
         io.in(data.url).emit('login', {
             numUsers: roomArr[socket.url],
             url: data.url
