@@ -9,6 +9,8 @@ window.onload = function () {
     console.log("Canvas loadred");
 
 
+    console.log("USer: " +     localStorage.getItem('username'));
+
     //===============================================Handling background change
     //the default background
     Mycanvas.style.backgroundImage = "url('../images/whiteboard/dark.jpg')";
@@ -152,7 +154,7 @@ window.onload = function () {
 socket.on('updateNewJoinerDrawBckgnd',
     function(bckgnd){
         Mycanvas.style.backgroundImage = "  url('../images/whiteboard/" + bckgnd + " ') ";
-    
+
 });
 //draw history
 socket.on('updateNewJoinerDraw', function(data){
@@ -202,6 +204,23 @@ if(typeof data != 'undefined' || data != null ) {
             paths3Holder[client] = new Array();
         }
         paths3Holder[client].push(histPath);
+
+        // if (client == my_id){
+        //
+        //     if(!paths2Holder[client]) {
+        //         paths2Holder[client] = new Array();
+        //     }
+        //     paths2Holder[client].push(histPath);
+        //
+        // }
+        // else{
+        //
+        //     if(!paths3Holder[client]) {
+        //         paths3Holder[client] = new Array();
+        //     }
+        //     paths3Holder[client].push(histPath);
+        //
+        // }
 
     }
 
@@ -505,3 +524,27 @@ socket.on('brush2',
 };
 //======================================================================================================================
 
+//logout
+function logout_fun()
+{
+    //just k-in ww.js
+
+    var hr = new XMLHttpRequest();
+    hr.onreadystatechange = function()
+    {
+        if(hr.readyState == 4 && hr.status == 200)
+        {
+            result = hr.responseText;
+            alert(result);
+        }
+    };
+
+    hr.open('POST', '/logout', true);
+    hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    hr.send("logout req");
+
+}
+
+$("#logout").click(function () {
+    logout_fun();
+});

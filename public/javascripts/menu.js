@@ -11,7 +11,7 @@ $(function () {
         $elem.find('img')
             .stop(true)
             .animate({
-                'width': '22vh',
+                'width': '20vh',
                 'height': '12vh',
                 'left': '0px'
             }, 400, 'easeOutBack')
@@ -25,9 +25,9 @@ $(function () {
             .animate({'height': '25vh'}, 300, function () {
                 var $sub_menu = $elem.find('.sdt_box');
                 if ($sub_menu.length) {
-                    var left = '22vh';
+                    var left = '20vh';
                     if ($elem.parent().children().length == $elem.index() + 1)
-                        left = '-22vh';
+                        left = '-20vh';
                     $sub_menu.show().animate({'left': left}, 200);
                 }
             });
