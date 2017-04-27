@@ -31,15 +31,15 @@
     <!--<h1 class="title">Slide Down Box Menu with jQuery and CSS3</h1>-->
     <!--Ballo-->
     <div class="container">
-        <div class="chat" style="overflow: visible">
+        <div class="chat"style="overflow: visible" id="chatbox">
 
             <a href="#" id="minmizeChat">
 
-                <div class="chat-title">
+                <div class="chat-title"  >
                     <span class="chat-message-counter" id="countermsg"></span>
 
 
-                    <figure class="avatar" id="myColor">
+                    <figure class="avatar"  id="myColor">
                         <!--<span></span>-->
                     </figure>
                 </div>
@@ -47,14 +47,15 @@
             <div class="messages">
                 <div id="messageContent" class="messages-content"></div>
             </div>
-            <div class="message-box">
+            <div class="message-box"id="chattext" style="display: none">
                 <textarea type="text" placeholder="Type message..." id="messageInput" class="message-input"></textarea>
                 <button type="submit" id="submit" class="message-submit">Send</button>
             </div>
         </div>
-        <div class="bg"></div>
+
     </div>
     <!--Ballo-->
+
     <h2> <%=  userInfo  %> </h2>
     <!--<script> var user2=  userInfo; </script>-->
 
