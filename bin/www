@@ -49,7 +49,7 @@ function newConnection(socket) {
     console.log("connected");
     io.clients(function(error, clients){
         if (error) throw error;
-        console.log(clients);
+        //console.log(clients);
     });
     // when the client emits 'add user', this listens and executes
     socket.on('addUser2Room', function (data) {
@@ -58,8 +58,8 @@ function newConnection(socket) {
         console.log(data.url);
         // search for roomurl if it exist
         var found = false;
-        for(var val in roomUrl){
-            if (roomUrl[val] == data.url){
+        for(var val in roomArr){
+            if (val == data.url){
                 found = true;
             }
         }
@@ -84,7 +84,8 @@ function newConnection(socket) {
 
         // we store the username in the socket session for this client and this room
         console.log(data.username, " is joining room ", data.url);
-
+        //console.log(roomUrl);
+        //console.log(roomArr);
         socket.join(data.url);
 
         socket.username = data.username;
@@ -113,7 +114,6 @@ function newConnection(socket) {
             roomArr[data.url] = 1;
 
         }
-        console.log(roomUrl);
 
         //console.log(roomArr[data.roomname]);
 
@@ -130,7 +130,7 @@ function newConnection(socket) {
             username: socket.username,
             numUsers: roomArr[socket.url]
         });
-        console.log("URL bfore log"+data.url);
+
         io.in(data.url).emit('login', {
             numUsers: roomArr[socket.url],
             url : data.url

@@ -92,7 +92,8 @@ socket.on('stop typing', function (data) {
 // minmizing chat box by making decreasing its height
 $('#minmizeChat').click(function () {
     if(toggle){
-        $('.chat').css("height","7vh");
+        $('#chatbox').css("height","7vh");
+        $('#chattext').css("display","none");
         toggle =false;
         if (unseenmsg!=0){
             $('#countermsg').text(unseenmsg);
@@ -102,7 +103,8 @@ $('#minmizeChat').click(function () {
     else{
         $('#countermsg').css("display",'none');
         unseenmsg = 0;
-        $('.chat').css("height","80vh");
+        $('#chatbox').css("height","80vh");
+        $('#chattext').css("display","inline");
         toggle = true;
     }
 });
