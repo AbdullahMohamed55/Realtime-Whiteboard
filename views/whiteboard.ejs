@@ -21,6 +21,8 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="../libraries/paperjs/dist/paper-full.js"></script>
     <script src="../javascripts/whiteboard_control.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
 
 </head>
 
@@ -55,9 +57,6 @@
         <div class="bg"></div>
     </div>
     <!--Ballo-->
-    <h2> <%=  userInfo  %> </h2>
-    <!--<script> var user2=  userInfo; </script>-->
-
     <ul id="sdt_menu" class="sdt_menu" resize="true">
         <li>
             <a href="#">
@@ -174,10 +173,30 @@
 						</span>
             </a>
             <div class="sdt_box">
-                <p>Hi, user</p>
+
+
+                <a href="#" id="hi"> Hi, <%= userInfo %> </a>
+
                 <a href="/users" id="login" s>Login</a>
                 <a href="/users" id="signup">Sign up</a>
-                <a href="/users" id="logout">Sign up</a>
+
+                <a href="#" id="logout">Log out</a>
+
+                <script>
+
+                    var uname = "<%= userInfo %>" ;
+                    console.log("userrrrrrrr: " +uname);
+                    if (uname) {
+                        $('#login').hide();
+                        $('#signup').hide();
+                    }
+                    else
+                    {
+                        $('#hi').hide();
+                        $('#logout').hide();
+                    }
+                </script>
+
             </div>
         </li>
         <li>

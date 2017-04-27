@@ -8,9 +8,6 @@ window.onload = function () {
     paper.setup('myCanvas');
     console.log("Canvas loadred");
 
-
-    console.log("USer: " +     localStorage.getItem('username'));
-
     //===============================================Handling background change
     //the default background
     Mycanvas.style.backgroundImage = "url('../images/whiteboard/dark.jpg')";
@@ -524,6 +521,13 @@ socket.on('brush2',
 };
 //======================================================================================================================
 
+// console("user in wb_control" + authUser);
+//
+// if (app.locals.authUser){
+//     $('#login').hide();
+//     $('#signup').hide();
+// }
+
 //logout
 function logout_fun()
 {
@@ -545,6 +549,6 @@ function logout_fun()
 
 }
 
-$("#logout").click(function () {
-    logout_fun();
-});
+// $("#logout").click(function () {
+//     logout_fun();
+// });

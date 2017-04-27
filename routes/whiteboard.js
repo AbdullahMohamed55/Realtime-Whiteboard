@@ -9,6 +9,7 @@ router.get('/', function(req, res, next) {
     //console.log(path.join(__dirname, '../views'));
     sess = req.session;
 
+
     res.render('whiteboard', {userInfo: sess.username} );
 
 

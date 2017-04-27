@@ -32,21 +32,19 @@ app.use('/', whiteboard);
 
 // var aUser = "";
 //connect to database
-var connection = mysql.createConnection({
-
+var db = mysql.createPool({
+    connectionLimit : 100,
     host: 'us-cdbr-iron-east-03.cleardb.net',
     user: 'bbf17e20c980d8',
     password: 'b6abe9ee',
     database: 'heroku_96c18a2afd659e5'
 });
+var connection;
+db.getConnection(function(err, connection2) {
+    connection = connection2;
 
-connection.connect(function (error) {
-        if (error)
-            console.log("Can`t connect to database");
-        else
-            console.log("connected to database");
-    }
-);
+});
+
 
 function fetchUsers(handle, password, callback) {
     var query = connection.query('SELECT * FROM  users WHERE username = ' + connection.escape(handle), function (err, result) {
