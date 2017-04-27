@@ -9,12 +9,12 @@ function login_validation()
         if(hr.readyState == 4 && hr.status == 200)
         {
             result = hr.responseText;
-            alert(result);
             result=JSON.parse(result);
             document.getElementById("v_Handle2").innerHTML = result['handle'];
 
             if(result["status"] != 'failed')
             {
+                alert("Logged in successfully, go to our website :')");
                 document.getElementById("inForm").submit();
             }
         }
@@ -38,9 +38,9 @@ function signup_validation()
         if(hr.readyState == 4 && hr.status == 200)
         {
             result = hr.responseText;
-            alert(result);
+            // alert(result);
             result=JSON.parse(result);
-            console.log("DEsrwewf: " + result);
+            // console.log("DEsrwewf: " + result);
             document.getElementById("v_Handle").innerHTML = result['handle'];
             document.getElementById("v_Pass").innerHTML = result['password'];
 
@@ -110,4 +110,3 @@ $('.tab a').on('click', function (e) {
     $(target).fadeIn(600);
 
 });
-

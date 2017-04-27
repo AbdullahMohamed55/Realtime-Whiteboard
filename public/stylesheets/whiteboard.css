@@ -4,8 +4,8 @@ ul.sdt_menu{
 	list-style: none;
 	font-family:"Myriad Pro", "Trebuchet MS", sans-serif;
 	font-size:14px;
-	/*width:200vh;*/
-	width:100%;
+	width:200vh;
+	/*width:100%;*/
 	/*position: inherit;*/
 	display:block;
 	z-index: 5;

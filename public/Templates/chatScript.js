@@ -1,27 +1,27 @@
-var typing =false;
+var typing = false;
 var userTyping = false;
 var toggle = false;
 var TYPING_TIMER_LENGTH = 400; // ms
 var socket = io.connect();
-var nousers =1;
+var nousers = 1;
 var username;
 var unseenmsg = 0;
 var $messages = $('.messages-content'),
     d, h, m;
 var clientData = {
-    username : "",
-    roomname : "Draw It",
-    url : ""
+    username: "",
+    roomname: "Draw It",
+    url: ""
 };
 var COLORS = [
     '#e21400', '#91580f', '#f8a700', '#f78b00',
     '#58dc00', '#287b00',
     '#3b88eb', '#3824aa',
-    '#FF33D4','#9633FF','#F9FF33','#17202A'
+    '#FF33D4', '#9633FF', '#F9FF33', '#17202A'
 ];
 
 
-socket.on('connect', function() {
+socket.on('connect', function () {
     console.log("I am connected to server");
 });
 
@@ -41,25 +41,25 @@ socket.on('reconnect_error', function () {
     log('attempt to reconnect has failed');
 });
 
-socket.on('updateNewJoiner',function(pastData){
-    for(i in pastData){
-        insertMessage(pastData[i].username, pastData[i].message,pastData[i].id);
+socket.on('updateNewJoiner', function (pastData) {
+    for (i in pastData) {
+        insertMessage(pastData[i].username, pastData[i].message, pastData[i].id);
         console.log(pastData[i]);
     }
 });
 
-socket.on('Token not found', function() {
+socket.on('Token not found', function () {
     swal("Token NOT Exist !", "New room was created")
 
 });
 
 socket.on('login', function (data) {
 
-    console.log("URL "+data.url);
+    console.log("URL " + data.url);
 
     clientData.url = data.url;
     nousers = data.numUsers;
-    $('#numusers').text('online users :'+nousers);
+    $('#numusers').text('online users :' + nousers);
     //log(message);
 
 });
@@ -67,7 +67,7 @@ socket.on('login', function (data) {
 socket.on('new message', function (data) {
     console.log("new mess");
 
-    insertMessage(data.username,data.message,data.id);
+    insertMessage(data.username, data.message, data.id);
 });
 
 socket.on('user joined', function (data) {
@@ -76,9 +76,9 @@ socket.on('user joined', function (data) {
 });
 
 socket.on('typing', function (data) {
-    if(!userTyping){
-    addChatTyping(data.username);
-    userTyping = true;
+    if (!userTyping) {
+        addChatTyping(data.username);
+        userTyping = true;
     }
 });
 
@@ -88,62 +88,82 @@ socket.on('stop typing', function (data) {
 });
 
 
-
 // minmizing chat box by making decreasing its height
 $('#minmizeChat').click(function () {
-    if(toggle){
-        $('#chatbox').css("height","7vh");
-        $('#chattext').css("display","none");
-        toggle =false;
-        if (unseenmsg!=0){
+    if (toggle) {
+        $('#chatbox').css("height", "7vh");
+        $('#chattext').css("display", "none");
+        toggle = false;
+        if (unseenmsg != 0) {
             $('#countermsg').text(unseenmsg);
-            $('#countermsg').css("display",'inline');
+            $('#countermsg').css("display", 'inline');
         }
     }
-    else{
-        $('#countermsg').css("display",'none');
+    else {
+        $('#countermsg').css("display", 'none');
         unseenmsg = 0;
-        $('#chatbox').css("height","80vh");
-        $('#chattext').css("display","inline");
+        $('#chatbox').css("height", "80vh");
+        $('#chattext').css("display", "inline");
         toggle = true;
     }
 });
 
+var userInfo = "";
+
+// socket.on('share',
+//     function (data) {
+//     console.log("Data received: " + data);
+//         userInfo = data;
+//     }
+//
+//
+// );
+
+console.log("userInfo: " + userInfo);
 // welcoming the user and ask them to enter a username and enter a room
-$(window).load(function() {
-    swal({
-            title: "Welcome to DrawIt",
-            type: "input",
-            text:"Please enter your username",
-            showCancelButton: false,
-            closeOnConfirm: false,
-            animation: "slide-from-top",
-            inputPlaceholder: "Write in your username",
-            closeOnCancel :false
-        },
-        function (inputValue) {
-            if (inputValue === false) return false;
+$(window).load(function () {
 
-            if (inputValue === "") {
-                swal.showInputError("You need to write something!");
-                return false
-            }
-            if(inputValue.length>15||inputValue.length<3){
-                swal.showInputError("Enter an username between 3 and 15 character");
-                return false
-            }
-            username = cleanInput(inputValue.trim());
+    // if (!userInfo) {
+        swal({
+                title: "Welcome to DrawIt",
+                type: "input",
+                text: "Please enter your nickname in the room",
+                showCancelButton: false,
+                closeOnConfirm: false,
+                animation: "slide-from-top",
+                inputPlaceholder: "Write in your username",
+                closeOnCancel: false
+            },
+            function (inputValue) {
+                if (inputValue === false) return false;
 
-            setUsername();
-            swal("Nice!", "Welcome " + inputValue, "success");
+                if (inputValue === "") {
+                    swal.showInputError("You need to write something!");
+                    return false
+                }
+                if (inputValue.length > 15 || inputValue.length < 3) {
+                    swal.showInputError("Enter an username between 3 and 15 character");
+                    return false
+                }
+                username = cleanInput(inputValue.trim());
 
-            addtoroom();
-        });
+                setUsername();
+                swal("Nice!", "Welcome " + inputValue, "success");
 
-    $('#submit').click(function() {
+                addtoroom();
+            });
+    // }
+    // else {
+    //     username = userInfo;
+    //     setUsername();
+    //     swal("Nice!", "Welcome " + userInfo, "success");
+    //     addtoroom();
+    // }
+
+    $('#submit').click(function () {
         sentMessage();
     });
-    $('#usernameSubmit').click(function() {
+    $('#usernameSubmit').click(function () {
         addtoroom();
     });
     $messages.mCustomScrollbar();
@@ -158,12 +178,12 @@ $('#share').click(function () {
 ///////////////////////
 
 // Prevents input from having injected markup
-function cleanInput (input) {
+function cleanInput(input) {
     return $('<div/>').text(input).text();
 }
 
 //hashing every user's color
-function getUsernameColor (id) {
+function getUsernameColor(id) {
     // Compute hash code
     var hash = 7;
     for (var i = 0; i < id.length; i++) {
@@ -175,9 +195,9 @@ function getUsernameColor (id) {
 }
 
 // adding someone to a new room or an existing one by entering a token of it.
-function addtoroom(){
+function addtoroom() {
 
-    if(username){
+    if (username) {
 
         swal({
                 title: "Enter Url",
@@ -192,7 +212,7 @@ function addtoroom(){
                 closeOnCancel: false
             },
 
-            function(isConfirm){
+            function (isConfirm) {
                 if (isConfirm) {
                     swal({
                             title: "Room URL",
@@ -201,7 +221,7 @@ function addtoroom(){
                             closeOnConfirm: false,
                             animation: "slide-from-top",
                             inputPlaceholder: "Write in your URl",
-                            closeOnCancel :false
+                            closeOnCancel: false
                         },
                         function (inputValue) {
                             if (inputValue === false) return false;
@@ -210,7 +230,7 @@ function addtoroom(){
                                 swal.showInputError("You need to write something!");
                                 return false
                             }
-                            if(inputValue.length>49){
+                            if (inputValue.length > 49) {
                                 swal.showInputError("the token is too long");
                                 return false
                             }
@@ -222,7 +242,6 @@ function addtoroom(){
                         });
 
 
-
                 } else {
                     swal("Done", "New room was created", "success");
                     socket.emit('addUser2Room', clientData);
@@ -232,31 +251,29 @@ function addtoroom(){
             });
 
 
-
     }
 }
 
 // sending a message to server
 function sentMessage() {
     selector = $('#messageInput')
-    if (selector.val() != "")
-    {
+    if (selector.val() != "") {
 
-        socket.emit('new message',selector.val(),username);
+        socket.emit('new message', selector.val(), username);
         //insertMessage(selector.val(),"Me");
         selector.val('');
     }
 }
 
 // update username and the users number in the room
-function setUsername () {
+function setUsername() {
 
     // If the username is valid
     if (username) {
 
         clientData.username = username;
-        $('<div style="text-decoration: none">' +  username  + '</div>').appendTo($('.chat-title')).addClass('new');
-        $('<div class="timestamp" id="numusers" style="margin: 0px">online users :' +  nousers  + '</div>').appendTo($('.chat-title')).addClass('new');
+        $('<div style="text-decoration: none">' + username + '</div>').appendTo($('.chat-title')).addClass('new');
+        $('<div class="timestamp" id="numusers" style="margin: 0px">online users :' + nousers + '</div>').appendTo($('.chat-title')).addClass('new');
         $('#myColor').css('background-color', getUsernameColor(socket.id));
 
 
@@ -264,8 +281,8 @@ function setUsername () {
 }
 
 // notification message when a new user enters the room
-function log (message) {
-    $('<div class="timestamp">' +  message  + '</div>').appendTo($('.mCSB_container')).addClass('new');
+function log(message) {
+    $('<div class="timestamp">' + message + '</div>').appendTo($('.mCSB_container')).addClass('new');
     //$("#messageContent").append('<div class="timestamp">' +  message  + '</div>');
     updateScrollbar();
 }
@@ -279,15 +296,15 @@ function updateScrollbar() {
     });
 }
 
-$('#messageInput').on( 'input',function() {
+$('#messageInput').on('input', function () {
     updateTyping();
 });
 
 
 //add time to message when two message not in the same minute
-function setDate(){
+function setDate() {
     d = new Date()
-    if (d.getMinutes()!=m) {
+    if (d.getMinutes() != m) {
         m = d.getMinutes();
         $('<div class="timestamp">' + d.getHours() + ':' + m + '</div>').appendTo($('.mCSB_container')).addClass('new');
         //$("#messageContent").append('<div class="timestamp">' + d.getHours() + ':' + m + '</div>');
@@ -297,7 +314,7 @@ function setDate(){
 }
 
 // insert the message in the chat box
-function insertMessage(user,msg,id) {
+function insertMessage(user, msg, id) {
     setDate();
     //security concerns
     if (socket.id == id) {
@@ -309,16 +326,16 @@ function insertMessage(user,msg,id) {
         $('<div class="message message-personal">' + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
 
     }
-    else{
+    else {
         // if message is not seen yet
-        if(!toggle){
-            unseenmsg+=1;
+        if (!toggle) {
+            unseenmsg += 1;
             $('#countermsg').text(unseenmsg);
-            $('#countermsg').css("display",'inline');
+            $('#countermsg').css("display", 'inline');
         }
-        $('<div class="message new"><figure class="avatar" style="background-color:'+getUsernameColor(id)+'"></figure>'
+        $('<div class="message new"><figure class="avatar" style="background-color:' + getUsernameColor(id) + '"></figure>'
             + msg + '</div>').appendTo($('.mCSB_container')).addClass('new');
-        $('.message:last').append('<div class="userstamp">'+user+'</div>')
+        $('.message:last').append('<div class="userstamp">' + user + '</div>')
     }
 
     $('#messageInput').val(null);
@@ -327,7 +344,7 @@ function insertMessage(user,msg,id) {
 }
 
 
-$(window).on('keydown', function(e) {
+$(window).on('keydown', function (e) {
     if (e.which == 13) {
         sentMessage();
         return false;
@@ -335,19 +352,19 @@ $(window).on('keydown', function(e) {
 })
 
 // add someone is typing in chatbox
-function addChatTyping (user) {
+function addChatTyping(user) {
     $('<div class="message loading"><figure class="avatar" style="background-color:grey"></figure></div>').appendTo($('.mCSB_container')).addClass('new');
-    $('.message:last').append('<div>someone is typing...'+'</div>');
+    $('.message:last').append('<div>someone is typing...' + '</div>');
     updateScrollbar();
 }
 
 // remove someone is typing from html
-function removeChatTyping () {
+function removeChatTyping() {
     $('.message.loading').remove();
 }
 
 // update typing interval and emit it to the server
-function updateTyping () {
+function updateTyping() {
 
     if (!typing) {
         typing = true;

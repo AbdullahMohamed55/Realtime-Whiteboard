@@ -30,6 +30,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', users);
 app.use('/', whiteboard);
 
+
+app.get('/users/:user/:image', function(req, res)
+{
+//console.log(req.params.user+" "+req.params.image);
+    res.sendFile(__dirname+"/users/"+req.params.user+"/"+req.params.image);
+});
+
+
 // var aUser = "";
 //connect to database
 var db = mysql.createPool({
@@ -42,16 +50,17 @@ var db = mysql.createPool({
 var connection;
 db.getConnection(function(err, connection2) {
     connection = connection2;
-
+    if(!err)
+        console.log("Connected to database");
 });
 
 
 function fetchUsers(handle, password, callback) {
     var query = connection.query('SELECT * FROM  users WHERE username = ' + connection.escape(handle), function (err, result) {
-        if(result.length != 0) {
+        // if(result.length != 0) {
             // console.log(result[0]['username']);
             // console.log(result[0].password);
-        }
+        // }
         callback(result.length != 0 && result[0].username == handle && result[0]['password'] == password);
     });
 }
@@ -135,6 +144,7 @@ app.post('/signup', function (req, res) {
 
 
 app.post('/logout',function(req,res){
+    console("logout request received");
     req.session.destroy(function(err) {
         if(err) {
             console.log(err);

@@ -44,7 +44,7 @@ window.onload = function () {
 
 
 //==============================my initialization for brush
-    var Dcolor = "black";
+    var Dcolor = "white";
     var Dsize = 2;
     var paths2Holder = new Array(); //holds my paths
     var paths3Holder = []; //holds my received paths
@@ -53,6 +53,9 @@ window.onload = function () {
     var savePaths = new  Array(); //container of all path points
     var clearedScreen = false;
     // console.log(Clearpath.length);
+    var path_length = 0;
+
+
     //-----------------Brush--------------------
     var tool1 = new Tool();
     tool1.minDistance = 10;
@@ -179,6 +182,7 @@ if(typeof data != 'undefined' || data != null ) {
     //     }
     // }
 
+    path_length += data.length;
     //edited
     for (var i = 0; i < data.length; i++) {
 
@@ -226,6 +230,89 @@ if(typeof data != 'undefined' || data != null ) {
 }
 });
 
+//====================================================Save&Load
+
+$("#save").click(function () {
+
+    if(path_length>0)
+    {
+        // alert("your draws successfully saved");
+        var canvas = document.getElementById('myCanvas'),
+            dataUrl = canvas.toDataURL();
+
+        socket.emit('save', dataUrl);
+    }
+    else alert("there is no draws to save");
+
+});
+
+socket.on('save', function(data){
+
+    console.log("data here: " + data)
+
+    alert(data);
+
+});
+
+
+socket.on('load', function(data){
+
+    console.log("Hist received data: ");
+
+    data = JSON.parse(data);
+
+
+    // //do I need a container here to look if drawHist is emtpy I will clear it ?!!
+    if(typeof data != 'undefined' || data != null ) {
+        // console.log("Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + data[0][0].pnt);
+
+        path_length += data.length;
+        //edited
+        for (var i = 0; i < data.length; i++) {
+
+            var client = data[i][0];
+            var currentData = data[i][1];
+
+            console.log("client: " + client);
+            console.log("currentData: " +currentData);
+
+            var histPath = new Path();
+            histPath.strokeColor = currentData[0].Dcolor;
+            histPath.strokeWidth = currentData[0].Dsize;
+
+            for (var j = 0; j < currentData.length; j++) {
+
+                histPath.add(new Point(currentData[j].pnt[1], currentData[j].pnt[2]));
+            }
+
+            if(!paths3Holder[client]) {
+                paths3Holder[client] = new Array();
+            }
+            paths3Holder[client].push(histPath);
+
+            // if (client == my_id){
+            //
+            //     if(!paths2Holder[client]) {
+            //         paths2Holder[client] = new Array();
+            //     }
+            //     paths2Holder[client].push(histPath);
+            //
+            // }
+            // else{
+            //
+            //     if(!paths3Holder[client]) {
+            //         paths3Holder[client] = new Array();
+            //     }
+            //     paths3Holder[client].push(histPath);
+            //
+            // }
+
+        }
+
+        socket.emit('archive',data);
+    }
+});
+
 //=======================receiving any sent data from server
 socket.on('brush1',
     // When we receive data
@@ -264,6 +351,7 @@ socket.on('brush2',
         paths2Holder.push(path2);
         // savePaths.push(pathPoints); //will form drawHist
         console.log(pathPoints);
+        path_length++;
 
         socket.emit('mouse_up', pathPoints); //modified
     };
@@ -279,6 +367,7 @@ socket.on('brush2',
             console.log(paths3Holder);
             console.log(paths3Holder[data]);
             console.log(path3);
+            path_length++;
 
         }
     );
@@ -316,8 +405,10 @@ socket.on('brush2',
         if (paths2Holder.length >0){
             paths2Holder[paths2Holder.length - 1].remove();
             paths2Holder.pop();
+            path_length--;
+            socket.emit('undo');
         }
-        socket.emit('undo');
+
     });
 
     socket.on('undo',
@@ -331,7 +422,7 @@ socket.on('brush2',
             if (paths3Holder[data].length > 0){
                 paths3Holder[data][paths3Holder[data].length - 1].remove();
                 paths3Holder[data].pop();
-
+                path_length--;
             }
             // view.draw();
             //console.log("Path to be deleted: " + path3.id);
@@ -441,6 +532,35 @@ socket.on('brush2',
         $('.flash').hide();
     });
 
+//================================================================logout
+    function logout_fun()
+    {
+        var hr = new XMLHttpRequest();
+        hr.onreadystatechange = function()
+        {
+            if(hr.readyState == 4 && hr.status == 200)
+            {
+                result = hr.responseText;
+                alert(result);
+
+                if(result == 'Logged out')
+                {
+                    document.getElementById("outForm").submit();
+                }
+            }
+        };
+
+        var v = "";
+        hr.open('POST', '/logout', true);
+        hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        hr.send(v);
+
+    }
+
+$("#logout").click(function () {
+    logout_fun();
+});
+
 //===============================================Handling Circles OR Brush
     $("#circle").click(function () {
         tool2.activate();
@@ -521,34 +641,29 @@ socket.on('brush2',
 };
 //======================================================================================================================
 
-// console("user in wb_control" + authUser);
+// $("#login").click(function () {
 //
-// if (app.locals.authUser){
-//     $('#login').hide();
-//     $('#signup').hide();
-// }
-
-//logout
-function logout_fun()
-{
-    //just k-in ww.js
-
-    var hr = new XMLHttpRequest();
-    hr.onreadystatechange = function()
-    {
-        if(hr.readyState == 4 && hr.status == 200)
-        {
-            result = hr.responseText;
-            alert(result);
-        }
-    };
-
-    hr.open('POST', '/logout', true);
-    hr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    hr.send("logout req");
-
-}
-
-// $("#logout").click(function () {
-//     logout_fun();
+//     swal({
+//             title: "Go to Registration page ?!!",
+//             text: "Tip: take screenshot first to save your work",
+//             type: "warning",
+//             showCancelButton: true,
+//             confirmButtonColor: "#DD6B55",
+//             confirmButtonText: "Go to page without saving",
+//             cancelButtonText: "Cancel",
+//             closeOnConfirm: true,
+//             closeOnCancel: true
+//         },
+//         function(isConfirm){
+//             if (isConfirm) {
+//
+//             }
+//             // else {
+//             //
+//             // }
+//         });
+//
+// });
+//
+// $("#signup").click(function () {
 // });
