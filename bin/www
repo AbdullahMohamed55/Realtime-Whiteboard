@@ -32,11 +32,10 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 var io = require('socket.io')(server);
-//TODO USE A DB (reddis)
-//NAIVE SOLUTION!
+
 var roomArr = [];//num of users in each room
 var roomHist = [];
-//TODO add histroy of drawing & bckgnd settings
+
 var drawHist = [];
 var bckgnd = [];
 var roomUrl = new Object();
@@ -44,7 +43,6 @@ var roomUrl = new Object();
 io.sockets.on("connection", newConnection);
 
 
-//TODO emit url of a room when requseted
 
 function newConnection(socket) {
 
@@ -237,7 +235,6 @@ function newConnection(socket) {
     socket.on('new message', function (data) {
         // we tell the client to execute 'new message'
         roomHist[socket.url].push({username: socket.username, message: data, id: socket.id});
-        //TODO make it socket.to
         io.in(socket.url).emit('new message', {
             username: socket.username,
             message: data,
@@ -309,7 +306,6 @@ function newConnection(socket) {
                 // console.log("2nd path in 1st client: " + drawHist[socket.url][1]); // I want to delete(pop) specificlly this from drawHist!!
                 // console.log("1st path in 2nd client: " + drawHist[socket.url][2]);
 
-                //Dolaaaaaaaaaaa3!
                 // console.log("clientID in drawing history: " + drawHist[socket.url][0][0]);
                 console.log("clientID in sever side: " + socket.id);
 
@@ -426,30 +422,6 @@ function newConnection(socket) {
 }
 
 ///////////////////////////////////////////////////////
-/*
- //console.log("new connection  " + socket.id);
-
-
- //reloadUsers(); // Send the count to all the users
-
- socket.on('message', function(msg,usr){
- console.log("New message:", msg,"From : " ,usr);
- //send it to all other users
- //socket.broadcast.emit('chat message', msg);
- //send it to all including me!
- io.sockets.emit('message', msg,usr);
- });
- socket.on('disconnect', function() {
- console.log("Client has disconnected");
- users -= 1;
- reloadUsers();
-
- });
- }
- function reloadUsers() { // Send the count of the users to all
- io.sockets.emit('nbUsers', {"nb": users});
- }
- */
 /**
  * Normalize a port into a number, string, or false.
  */

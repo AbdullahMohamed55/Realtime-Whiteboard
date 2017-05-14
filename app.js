@@ -18,8 +18,6 @@ app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(session({secret: 'ssshhhhh'}));
@@ -33,7 +31,7 @@ app.use('/', whiteboard);
 
 app.get('/users/:user/:image', function(req, res)
 {
-//console.log(req.params.user+" "+req.params.image);
+    //to access images not in public!!
     res.sendFile(__dirname+"/users/"+req.params.user+"/"+req.params.image);
 });
 
@@ -57,10 +55,6 @@ db.getConnection(function(err, connection2) {
 
 function fetchUsers(handle, password, callback) {
     var query = connection.query('SELECT * FROM  users WHERE username = ' + connection.escape(handle), function (err, result) {
-        // if(result.length != 0) {
-            // console.log(result[0]['username']);
-            // console.log(result[0].password);
-        // }
         callback(result.length != 0 && result[0].username == handle && result[0]['password'] == password);
     });
 }

@@ -1,6 +1,5 @@
 paper.install(window);
 var socket;
-// socket = io.connect('http://localhost:3000');
 socket = io();
 
 window.onload = function () {
@@ -19,7 +18,7 @@ window.onload = function () {
         Mycanvas.style.backgroundImage = "  url('../images/whiteboard/" + data + " ') ";
     });
 
-    //jQuery==========Change background and forward it to socket
+    //=================================Change background and forward it to socket
     $("#dark").click(function () {
 
         Mycanvas.style.backgroundImage = "url('../images/whiteboard/dark.jpg')";
@@ -48,11 +47,9 @@ window.onload = function () {
     var Dsize = 2;
     var paths2Holder = new Array(); //holds my paths
     var paths3Holder = []; //holds my received paths
-    // var Clearpath = new Array();
     var pathPoints; //holds every path`s data
     var savePaths = new  Array(); //container of all path points
     var clearedScreen = false;
-    // console.log(Clearpath.length);
     var path_length = 0;
 
 
@@ -161,26 +158,7 @@ socket.on('updateNewJoinerDraw', function(data){
 
     console.log("Updtae data: " + data);
 
-
-    //do I need a container here to look if drawHist is emtpy I will clear it ?!!
 if(typeof data != 'undefined' || data != null ) {
-    // console.log("Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + data[0][0].pnt);
-
-    //data -> key[room]=>value[ path1 | path2 | .... ]
-    // for (var k = 0; k < data.length; k++) {
-    //     for (var i = 0; i < data[k].length; i++) {
-    //
-    //         var histPath = new Path();
-    //         histPath.strokeColor = data[k][i][0].Dcolor;
-    //         histPath.strokeWidth = data[k][i][0].Dsize;
-    //
-    //         for (var j = 0; j < data[k][i].length; j++) {
-    //
-    //             histPath.add(new Point(data[k][i][j].pnt[1], data[k][i][j].pnt[2]));
-    //
-    //         }
-    //     }
-    // }
 
     path_length += data.length;
     //edited
@@ -205,24 +183,6 @@ if(typeof data != 'undefined' || data != null ) {
             paths3Holder[client] = new Array();
         }
         paths3Holder[client].push(histPath);
-
-        // if (client == my_id){
-        //
-        //     if(!paths2Holder[client]) {
-        //         paths2Holder[client] = new Array();
-        //     }
-        //     paths2Holder[client].push(histPath);
-        //
-        // }
-        // else{
-        //
-        //     if(!paths3Holder[client]) {
-        //         paths3Holder[client] = new Array();
-        //     }
-        //     paths3Holder[client].push(histPath);
-        //
-        // }
-
     }
 
 
@@ -231,12 +191,10 @@ if(typeof data != 'undefined' || data != null ) {
 });
 
 //====================================================Save&Load
-
 $("#save").click(function () {
 
     if(path_length>0)
     {
-        // alert("your draws successfully saved");
         var canvas = document.getElementById('myCanvas'),
             dataUrl = canvas.toDataURL();
 
@@ -261,8 +219,6 @@ socket.on('load', function(data){
 
     data = JSON.parse(data);
 
-
-    // //do I need a container here to look if drawHist is emtpy I will clear it ?!!
     if(typeof data != 'undefined' || data != null ) {
         // console.log("Received History: " + data[0][0].Dcolor + " " + data[0][0].Dsize + data[0][0].pnt);
 
@@ -289,24 +245,6 @@ socket.on('load', function(data){
                 paths3Holder[client] = new Array();
             }
             paths3Holder[client].push(histPath);
-
-            // if (client == my_id){
-            //
-            //     if(!paths2Holder[client]) {
-            //         paths2Holder[client] = new Array();
-            //     }
-            //     paths2Holder[client].push(histPath);
-            //
-            // }
-            // else{
-            //
-            //     if(!paths3Holder[client]) {
-            //         paths3Holder[client] = new Array();
-            //     }
-            //     paths3Holder[client].push(histPath);
-            //
-            // }
-
         }
 
         socket.emit('archive',data);
@@ -337,7 +275,6 @@ socket.on('brush2',
 
         console.log("Received2: " + data);
 
-        //This is too fuckin stupid shit of java
         path3.add(new Point(data[1], data[2]));
         view.draw();
 
@@ -374,6 +311,7 @@ socket.on('brush2',
 
     //Only undo my work
     $("#undo").click(function () {
+        //undo the clear
         // canvas.parentNode.removeChild(path2);
         // console.log("Entered undo");
         // console.log("paths2Holder Size: " + paths2Holder.length );
@@ -463,21 +401,11 @@ socket.on('brush2',
                             paths3Holder[x].pop();
                         }
                     }
-                    // while(paths3Holder.length > 0) {
-                    //     paths3Holder[paths3Holder.length - 1].remove();
-                    //     paths3Holder.pop();
-                    // }
 
                     socket.emit('clear',"clear");
 
                 }
-                // else {
-                //
-                // }
             });
-
-        // print(context);
-        // console.log(context);
     });
 
     socket.on('clear',
@@ -640,30 +568,3 @@ $("#logout").click(function () {
 
 };
 //======================================================================================================================
-
-// $("#login").click(function () {
-//
-//     swal({
-//             title: "Go to Registration page ?!!",
-//             text: "Tip: take screenshot first to save your work",
-//             type: "warning",
-//             showCancelButton: true,
-//             confirmButtonColor: "#DD6B55",
-//             confirmButtonText: "Go to page without saving",
-//             cancelButtonText: "Cancel",
-//             closeOnConfirm: true,
-//             closeOnCancel: true
-//         },
-//         function(isConfirm){
-//             if (isConfirm) {
-//
-//             }
-//             // else {
-//             //
-//             // }
-//         });
-//
-// });
-//
-// $("#signup").click(function () {
-// });

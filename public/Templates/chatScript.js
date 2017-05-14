@@ -108,57 +108,37 @@ $('#minmizeChat').click(function () {
     }
 });
 
-var userInfo = "";
-
-// socket.on('share',
-//     function (data) {
-//     console.log("Data received: " + data);
-//         userInfo = data;
-//     }
-//
-//
-// );
-
-console.log("userInfo: " + userInfo);
 // welcoming the user and ask them to enter a username and enter a room
 $(window).load(function () {
 
-    // if (!userInfo) {
-        swal({
-                title: "Welcome to DrawIt",
-                type: "input",
-                text: "Please enter your nickname in the room",
-                showCancelButton: false,
-                closeOnConfirm: false,
-                animation: "slide-from-top",
-                inputPlaceholder: "Write in your username",
-                closeOnCancel: false
-            },
-            function (inputValue) {
-                if (inputValue === false) return false;
+    swal({
+            title: "Welcome to DrawIt",
+            type: "input",
+            text: "Please enter your nickname in the room",
+            showCancelButton: false,
+            closeOnConfirm: false,
+            animation: "slide-from-top",
+            inputPlaceholder: "Write in your username",
+            closeOnCancel: false
+        },
+        function (inputValue) {
+            if (inputValue === false) return false;
 
-                if (inputValue === "") {
-                    swal.showInputError("You need to write something!");
-                    return false
-                }
-                if (inputValue.length > 15 || inputValue.length < 3) {
-                    swal.showInputError("Enter an username between 3 and 15 character");
-                    return false
-                }
-                username = cleanInput(inputValue.trim());
+            if (inputValue === "") {
+                swal.showInputError("You need to write something!");
+                return false
+            }
+            if (inputValue.length > 15 || inputValue.length < 3) {
+                swal.showInputError("Enter an username between 3 and 15 character");
+                return false
+            }
+            username = cleanInput(inputValue.trim());
 
-                setUsername();
-                swal("Nice!", "Welcome " + inputValue, "success");
+            setUsername();
+            swal("Nice!", "Welcome " + inputValue, "success");
 
-                addtoroom();
-            });
-    // }
-    // else {
-    //     username = userInfo;
-    //     setUsername();
-    //     swal("Nice!", "Welcome " + userInfo, "success");
-    //     addtoroom();
-    // }
+            addtoroom();
+        });
 
     $('#submit').click(function () {
         sentMessage();
